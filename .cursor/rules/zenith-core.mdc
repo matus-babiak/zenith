@@ -1,0 +1,17 @@
+---
+description: Základné pravidlá AI vývoja Zenith — nehádaj, over kód, najmenšia zmena
+alwaysApply: true
+---
+
+# Zenith — jadro
+
+Pred akoukoľvek zmenou aplikácie prečítaj `docs/ai/README.md` a relevantné dokumenty v `docs/ai/`. Potom over reálny kód. Netvrď existenciu súborov, funkcií ani stacku, kým si ich nevidel.
+
+- Ak dokument hovorí „neznáme“, nevypĺňaj to odhadom.
+- Ak sa dokument a kód nezhodujú, kód je technická pravda. Konflikt pomenuj, dokument neprepisuj potichu.
+- Preferuj najmenšiu správnu zmenu. Neprebudovávaj architektúru, ak stačí existujúci pattern.
+- Pri nejasnom zámere, scope alebo voľbe technológie sa spýtaj a zastav.
+- Po zmene systémového faktu aktualizuj príslušný súbor v `docs/ai/`.
+- Plánovanie (`/zenith-plan`) nemení aplikáciu. Implementácia (`/zenith-implement`) beží až po schválení.
+
+Nepíš aplikačný kód v tom istom ťahu, v ktorom ešte zbieraš požiadavku.

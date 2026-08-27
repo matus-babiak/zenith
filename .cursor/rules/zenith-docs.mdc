@@ -1,0 +1,15 @@
+---
+description: Ako udržiavať docs/ai ako zdroj pravdy — žiadne vymyslené fakty
+globs: docs/ai/**/*.md
+alwaysApply: false
+---
+
+# Zenith — dokumentácia
+
+`docs/ai/` opisuje overený stav, nie želanie.
+
+- Neznáme ostáva označené ako neznáme.
+- Po implementácii aktualizuj len fakty, ktoré sa naozaj zmenili.
+- `analysis.md` je historický snímok; bežné fakty patria do product / architecture / data-model / ui-ux / business-rules.
+- Nepridávaj nové dokumenty bez jasného účelu.
+- Konflikty s kódom zapíš ako konflikt, neprepíš ich potichu.
