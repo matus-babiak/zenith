@@ -1,6 +1,27 @@
 const { neon } = require("@neondatabase/serverless");
 
 const MAX_BYTES = 1500000;
+const SCHEMA = 2;
+
+function emptyPayload() {
+  return {
+    schema: SCHEMA,
+    entries: { vdacnost: [], uspechy: [], hnevaju: [] },
+    ideas: [],
+    manifest: { text: "", lastViewed: null, sessions: 0 },
+    anchor: {
+      time: "12:30",
+      question:
+        "Som to stále ja, alebo len ďalší, čo iba reaguje? Tvorím tú realitu, alebo na ňu iba reagujem?",
+      read: [],
+    },
+    principles: [],
+  };
+}
+
+function needsMigration(payload) {
+  return !payload || payload.schema !== SCHEMA;
+}
 
 function send(res, code, body) {
   res.statusCode = code;
@@ -58,6 +79,14 @@ async function sql() {
   return client;
 }
 
+async function upsertPayload(db, payload) {
+  await db`
+    INSERT INTO zenith_state (id, payload, updated_at)
+    VALUES (1, ${JSON.stringify(payload)}::jsonb, now())
+    ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload, updated_at = now()
+  `;
+}
+
 module.exports = async function handler(req, res) {
   if (!process.env.DATABASE_URL || !process.env.ZENITH_SAVE_KEY) {
     return send(res, 503, { error: "not configured" });
@@ -77,6 +106,11 @@ module.exports = async function handler(req, res) {
     try {
       const rows = await db`SELECT payload FROM zenith_state WHERE id = 1`;
       const payload = rows[0] ? rows[0].payload : null;
+      if (needsMigration(payload)) {
+        const empty = emptyPayload();
+        await upsertPayload(db, empty);
+        return send(res, 200, { payload: empty });
+      }
       return send(res, 200, { payload });
     } catch (err) {
       return send(res, 500, { error: "database" });
@@ -101,11 +135,7 @@ module.exports = async function handler(req, res) {
       return send(res, 400, { error: "invalid payload" });
     }
     try {
-      await db`
-        INSERT INTO zenith_state (id, payload, updated_at)
-        VALUES (1, ${JSON.stringify(payload)}::jsonb, now())
-        ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload, updated_at = now()
-      `;
+      await upsertPayload(db, Object.assign({}, payload, { schema: SCHEMA }));
       return send(res, 200, { ok: true });
     } catch (err) {
       return send(res, 500, { error: "database" });
