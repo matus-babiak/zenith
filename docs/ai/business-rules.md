@@ -38,7 +38,7 @@ Zdroj: `index.html`, `CLAUDE.md`.
 2. **Vďačnosť: max 5 zápisov za dnešný deň** (pri novom zápise, nie pri úprave). `Component.J.vdacnost.limit`.
 3. **Nápady:** z `novy` ide `zruseny` alebo `vyzva`. Z výzvy `hotovo`. Predvolene naraz **jedna** výzva (`oneChallenge` default true).
 4. **Výzva:** 3 až 5 denných aktivít. Kód hlási chybu pod 3. Maximum polí 5.
-5. **Wipe** maže `localStorage` `zenith.v1`. Bez tohto gesta nestrácať používateľské dáta.
+5. **Persistencia len cez Neon.** Prehliadač neukladá dáta. Bez fungujúceho `/api/state` sa nové zápisy nezachovajú.
 
 ### Dôležité (apka)
 

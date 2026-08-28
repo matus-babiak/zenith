@@ -125,6 +125,10 @@ def main():
             if "postgres://" in body:
                 return fail("%s body contains postgres://" % path)
             if path == "/":
+                if "localStorage.getItem" in body or "localStorage.setItem" in body:
+                    return fail("/ still reads or writes localStorage")
+                if "Component.seed" in body:
+                    return fail("/ still references Component.seed")
                 if "Vyčistiť všetky dáta" in body:
                     return fail("/ still contains wipe label")
                 if "vendor/lucide.min.js" not in body:

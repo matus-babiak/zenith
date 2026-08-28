@@ -621,42 +621,6 @@ class Component extends DCLogic {
     { id: 'board', name: 'Princíp na tabuli' }
   ];
 
-  static seed() {
-    const d = (n) => { const t = new Date(); t.setDate(t.getDate() - n); return t.toISOString().slice(0, 10); };
-    return {
-      entries: {
-        vdacnost: [
-          { id: 'g1', text: 'Ráno bez telefónu prvú hodinu. Hlava bola tichá.', area: 'zdravie', date: d(0) },
-          { id: 'g2', text: 'Malá s nami zaspala bez plaču.', area: 'manzelstvo', date: d(0) },
-          { id: 'g3', text: 'Klient zaplatil skôr, než mal.', area: 'financie', date: d(1) },
-          { id: 'g4', text: 'Prechádzka s otcom po obede.', area: 'rodina', date: d(2) }
-        ],
-        uspechy: [
-          { id: 's1', text: 'Odmietol som projekt, ktorý som brať nemal.', area: 'praca', date: d(0), tier: true },
-          { id: 's2', text: 'Tri tréningy za týždeň, bez výnimky.', area: 'zdravie', date: d(1), tier: false },
-          { id: 's3', text: 'Dočítal som kapitolu a spísal poznámky.', area: 'rozvoj', date: d(3), tier: false }
-        ],
-        hnevaju: [
-          { id: 'h1', text: 'Zbytočné hovory, ktoré mohli byť dve vety v správe.', area: 'praca', date: d(0) },
-          { id: 'h2', text: 'Že sa porovnávam s ľuďmi, ktorých ani nepoznám.', area: 'rozvoj', date: d(2) }
-        ]
-      },
-      ideas: [
-        { id: 'i1', text: 'Naučiť sa variť päť jedál, ktoré zvládnem naslepo', area: 'zdravie', state: 'novy', created: d(1) },
-        { id: 'i2', text: 'Spustiť podcast o podnikaní', area: 'praca', state: 'zruseny', created: d(4) },
-        { id: 'i3', text: 'Kúpiť dron a filmovať víkendy', area: 'priatelia', state: 'zruseny', created: d(6) },
-        { id: 'i4', text: 'Ráno vstávať o 5:30 a mať dve hodiny na tvorbu', area: 'rozvoj', state: 'vyzva', created: d(12), start: d(11), acts: ['Vstať o 5:30', 'Hodina hlbokej práce', '20 minút čítania'], log: {} },
-        { id: 'i5', text: 'Vypnúť notifikácie na telefóne', area: 'zdravie', state: 'hotovo', created: d(40) }
-      ],
-      manifest: { text: 'Je ráno, vstávam pred rodinou a dom je ešte tichý. Nikam sa nenaháňam. Sadám si k práci, ktorú som si vybral, a robím ju bez toho, aby ma niekto naháňal, jednu vec, poriadne, do konca.\n\nNa obed sa zastavím. Viem, prečo to robím. Popoludní som s deťmi a nie som v telefóne. Manželka vie, že na mňa nemusí čakať s dôležitými vecami až do večera, lebo som prítomný priebežne.\n\nPeniaze sú v poriadku, lebo mám menej vecí a tie fungujú. Telo je v poriadku, lebo sa hýbem každý deň. Hlava je v poriadku, lebo neriešim desať výziev, jednu, šesťdesiat dní.', lastViewed: null, sessions: 0 },
-      anchor: { time: '12:30', question: 'Som to stále ja, alebo len ďalší, čo iba reaguje? Tvorím tú realitu, alebo na ňu iba reagujem?', read: [d(1), d(2), d(4)] },
-      principles: [
-        { id: 'p1', title: 'Kapacita nie je čas, je to pozornosť', body: 'Deň sa nedá natiahnuť, ale pozornosť sa dá presunúť. Jeden veľký kyblík na tvorbu, malý na reakcie. Keď sa poradie obráti, deň je plný a nič sa neposunulo.', sketch: 'buckets', labels: ['Tvorba', 'Reakcie', 'Zbytok'], source: 'Konec prokrastinace, kap. 3', date: d(5) },
-        { id: 'p2', title: 'Nápad nie je záväzok', body: 'Myšlienka smie skončiť tým, že ju zrušíš. Zrušiť je rozhodnutie, nie prehra, desať paralelných výziev je prehra.', sketch: 'board', labels: ['Nápad', 'Zrušiť', 'Jedna výzva'], source: 'Denník CEO, kap. 7', date: d(9) }
-      ]
-    };
-  }
-
   static empty() {
     return {
       entries: { vdacnost: [], uspechy: [], hnevaju: [] },
@@ -668,9 +632,7 @@ class Component extends DCLogic {
   }
 
   state = (() => {
-    let saved = null;
-    try { saved = JSON.parse(localStorage.getItem('zenith.v1') || 'null'); } catch (e) { saved = null; }
-    const data = saved || Component.seed();
+    const data = Component.empty();
     return {
       route: typeof location !== 'undefined' ? Component.routeFromPath(location.pathname) : 'home',
       drawer: false, navExpanded: true, w: typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -686,6 +648,7 @@ class Component extends DCLogic {
   })();
 
   componentDidMount() {
+    try { localStorage.removeItem('zenith.v1'); } catch (e) { /* ignore */ }
     this._onResize = () => this.setState({ w: window.innerWidth });
     this._onPop = () => {
       const r = Component.routeFromPath(location.pathname);
@@ -752,16 +715,9 @@ class Component extends DCLogic {
       if (!data) return;
       if (data.payload && data.payload.entries) {
         this.applyPayload(data.payload);
-        try { localStorage.setItem('zenith.v1', JSON.stringify(this.snapshotFrom(data.payload))); } catch (e) { /* ignore */ }
         return;
       }
-      let saved = null;
-      try { saved = JSON.parse(localStorage.getItem('zenith.v1') || 'null'); } catch (e) { saved = null; }
-      if (saved && saved.entries) {
-        this.putRemote(saved);
-      } else {
-        this.applyPayload(Component.empty());
-      }
+      this.applyPayload(Component.empty());
     }).catch(() => {
       this._allowRemote = false;
     }).finally(() => {
@@ -770,17 +726,9 @@ class Component extends DCLogic {
     });
   }
 
-  snapshotFrom(data) {
-    return { entries: data.entries, ideas: data.ideas, manifest: data.manifest, anchor: data.anchor, principles: data.principles };
-  }
-
   persist() {
-    if (!this._hydrated) return;
+    if (!this._hydrated || !this._allowRemote) return;
     const snap = this.snapshot();
-    try {
-      localStorage.setItem('zenith.v1', JSON.stringify(snap));
-    } catch (e) { /* storage full or blocked, prototype keeps working in memory */ }
-    if (!this._allowRemote) return;
     if (this._putTimer) clearTimeout(this._putTimer);
     this._putTimer = setTimeout(() => this.putRemote(snap), 500);
   }
