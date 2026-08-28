@@ -47,7 +47,7 @@ V kóde ako `Component.AREAS`:
 4. Žiadne napojenie na kalendár klientov, firemné systémy ani produkčné API.
 5. Web v prehliadači (nie App Store). Slovenčina. Telefón. Pridanie na plochu iOS. Ikona **vrchol** (Z + šípka na nočnom čiernom pozadí) je v chrome. Pri písaní na iPhone sa stránka nesmie priblížiť, pole ostane rovnako veľké.
 6. Pôvodne: nestavať všetky moduly naraz. **Konflikt:** prototyp v koreni už obsahuje všetky časti. Ďalšia práca ho upravuje, nestrká druhú apku vedľa.
-7. LoL gamifikácia ako hra nie je. S-tier na úspechoch v kóde je. 60-dňová výzva v kóde je. Denný systémový budík predvolene nie (`anchorNotify: false`).
+7. Plná LoL hra nie je. Automatický rebríček úspechov (inšpirovaný rank systémom) v kóde je. 60-dňová výzva v kóde je. Denný systémový budík predvolene nie (`anchorNotify: false`).
 8. Princípy: poznámky → princíp + jednoduchý nákres, nie celá kniha ako tlač.
 9. Aplikácia sama nenaháňa desiatkami upozornení. Max neskôr jeden denný alarm kotvy.
 10. Ľahšie je **zrušiť** nápad, než začať desať výziev. V kóde predvolene `oneChallenge: true`.
