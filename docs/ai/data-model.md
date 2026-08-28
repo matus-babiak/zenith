@@ -1,14 +1,16 @@
 # Dátový model — Zenith
 
-**Stav:** Persistencia v prehliadači, nie databáza.  
-**Posledné overenie:** 28. 8. 2026, `index.html`.
+**Stav:** Persistencia Neon (keď je env) a `localStorage` ako záloha.  
+**Posledné overenie:** 28. 8. 2026, `index.html` + `api/state.js`.
 
 ## Aktuálny stav
 
-- Žiadna databáza, migrácie, seed súbory na disku.
-- Zdroj pravdy v behu: `localStorage` kľúč **`zenith.v1`**.
-- Ak kľúč chýba alebo sa nedá čítať, použije sa `Component.seed()` (ukážkové zápisy).
-- V UI nie je tlačidlo na vyčistenie dát. `zenith.v1` ostáva, kým nebude databáza.
+- Tabuľka Neon: `zenith_state` (id=1, `payload` JSONB). Vzniká `CREATE TABLE IF NOT EXISTS`, žiadny DROP.
+- API: `GET`/`PUT` `/api/state`. Telo PUT: `{ "payload": { entries, ideas, manifest, anchor, principles } }`.
+- Env: `DATABASE_URL`, `ZENITH_SAVE_KEY` (hlavička `x-zenith-key`), `SITE_PASSWORD` (cookie brána na Vercel). Hodnoty nie sú v gite.
+- Záloha v prehliadači: `localStorage` kľúč **`zenith.v1`**.
+- Ak API nie je (lokálny `serve.py`, 503, 401), ostane localStorage. Ak kľúč chýba, `Component.seed()` (ukážka).
+- Prázdny Neon sa neseeduje ukážkou. Ak Neon prázdny a v localStorage už sú dáta, raz sa nahrajú.
 
 Ukladá sa len: `entries`, `ideas`, `manifest`, `anchor`, `principles`. Routa, drafty a otvorené dialógy sa nepersistujú.
 
@@ -28,9 +30,10 @@ Sedem oblastí (id v kóde): `zdravie`, `rozvoj`, `praca`, `financie`, `manzelst
 
 ## Pravidlá uloženia
 
-- Všetko je lokálne v jednom prehliadači. Žiadny účet, žiadny sync.
-- Citlivé údaje: osobné zápisy v `localStorage`. Nekomitovať dump tohto kľúča.
+- Jedna tabuľka, jeden riadok. Nie sedem tabuliek.
+- Tajomstvá len env. Nekomitovať `.env` ani dump payloadu.
+- `ZENITH_SAVE_KEY` v nasadenom `zenith-config.js` je viditeľný v zdroji stránky. Bráni to náhodnému curl, nie cielenému útoku. Kto má URL aj kľúč, vidí zápisy.
 
 ## Pravidlo pre agentov
 
-Nepridávať tabuľky ani backend, kým to nie je v schválenom zadaní. Polia meniť len podľa existujúceho `persist()` tvaru, alebo zadanie musí povedať migráciu tohto JSON.
+Nemazať tabuľku. DROP zakázaný. Polia meniť len podľa `payload` tvaru, alebo zadanie musí povedať migráciu tohto JSON.

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """GET clean Zenith paths and assert HTTP 200 with Zenith in the body."""
+import json
 import socket
 import subprocess
 import sys
@@ -19,6 +20,11 @@ ROUTES = [
     "/kotva",
     "/principy",
 ]
+ASSETS = [
+    "/apple-touch-icon.png",
+    "/favicon-32.png",
+    "/manifest.webmanifest",
+]
 
 
 def free_port():
@@ -29,7 +35,56 @@ def free_port():
     return port
 
 
+def fail(msg):
+    print("FAIL", msg)
+    return 1
+
+
 def main():
+    env_ex = (ROOT / ".env.example").read_text("utf-8", "replace")
+    if "DATABASE_URL=" not in env_ex or "ZENITH_SAVE_KEY=" not in env_ex or "SITE_PASSWORD=" not in env_ex:
+        return fail(".env.example missing DATABASE_URL, ZENITH_SAVE_KEY or SITE_PASSWORD")
+    if "postgres://" in env_ex or "neon.tech" in env_ex:
+        return fail(".env.example looks like it contains a real connection string")
+    for line in env_ex.splitlines():
+        if line.startswith("SITE_PASSWORD=") and line.strip() != "SITE_PASSWORD=":
+            return fail(".env.example SITE_PASSWORD is not empty")
+    mw = ROOT / "middleware.js"
+    if not mw.is_file():
+        return fail("middleware.js missing")
+    mw_txt = mw.read_text("utf-8", "replace")
+    if "SITE_PASSWORD" not in mw_txt:
+        return fail("middleware.js missing SITE_PASSWORD")
+    if "postgres://" in mw_txt or "neon.tech/" in mw_txt:
+        return fail("middleware.js contains a connection string")
+    gate = ROOT / "gate.html"
+    if not gate.is_file():
+        return fail("gate.html missing")
+    gate_txt = gate.read_text("utf-8", "replace")
+    if "—" in gate_txt:
+        return fail("gate.html contains em dash")
+    if 'name="heslo"' not in gate_txt:
+        return fail("gate.html missing heslo field")
+    if not (ROOT / "vercel.json").is_file():
+        return fail("vercel.json missing")
+    vercel = json.loads((ROOT / "vercel.json").read_text("utf-8"))
+    rewrites = vercel.get("rewrites") or []
+    if not any("index.html" in str(r.get("destination", "")) for r in rewrites):
+        return fail("vercel.json has no SPA rewrite to index.html")
+    api = ROOT / "api" / "state.js"
+    if not api.is_file():
+        return fail("api/state.js missing")
+    api_txt = api.read_text("utf-8", "replace")
+    if "postgres://" in api_txt or "neon.tech/" in api_txt:
+        return fail("api/state.js contains a connection string")
+    if "CREATE TABLE IF NOT EXISTS zenith_state" not in api_txt:
+        return fail("api/state.js missing CREATE TABLE IF NOT EXISTS")
+    if "DROP TABLE" in api_txt.upper():
+        return fail("api/state.js contains DROP")
+    cfg = (ROOT / "zenith-config.js").read_text("utf-8", "replace")
+    if "postgres://" in cfg:
+        return fail("zenith-config.js contains a connection string")
+
     port = free_port()
     proc = subprocess.Popen(
         [sys.executable, str(ROOT / "scripts" / "serve.py"), str(port)],
@@ -53,46 +108,70 @@ def main():
             return 1
         for path in ROUTES:
             if "Zenith.dc.html" in path:
-                print("FAIL path contains Zenith.dc.html:", path)
-                return 1
+                return fail("path contains Zenith.dc.html: " + path)
             try:
                 with urllib.request.urlopen(base + path, timeout=5) as resp:
                     code = resp.getcode()
                     body = resp.read().decode("utf-8", "replace")
                     final = resp.geturl()
             except urllib.error.HTTPError as err:
-                print("FAIL", path, "status", err.code)
-                return 1
+                return fail("%s status %s" % (path, err.code))
             if code != 200:
-                print("FAIL", path, "status", code)
-                return 1
+                return fail("%s status %s" % (path, code))
             if "Zenith" not in body:
-                print("FAIL", path, "body missing Zenith")
-                return 1
+                return fail("%s body missing Zenith" % path)
             if "Zenith.dc.html" in final:
-                print("FAIL", path, "ended at Zenith.dc.html")
-                return 1
+                return fail("%s ended at Zenith.dc.html" % path)
+            if "postgres://" in body:
+                return fail("%s body contains postgres://" % path)
             if path == "/":
                 if "Vyčistiť všetky dáta" in body:
-                    print("FAIL / still contains wipe label")
-                    return 1
+                    return fail("/ still contains wipe label")
                 if "vendor/lucide.min.js" not in body:
-                    print("FAIL / missing Lucide script")
-                    return 1
+                    return fail("/ missing Lucide script")
+                if "apple-touch-icon" not in body:
+                    return fail("/ missing apple-touch-icon")
+                if "manifest.webmanifest" not in body:
+                    return fail("/ missing manifest.webmanifest")
+            print("OK", path)
+        for path in ASSETS:
+            try:
+                with urllib.request.urlopen(base + path, timeout=5) as resp:
+                    code = resp.getcode()
+                    data = resp.read()
+            except urllib.error.HTTPError as err:
+                return fail("%s status %s" % (path, err.code))
+            if code != 200:
+                return fail("%s status %s" % (path, code))
+            if path.endswith(".webmanifest"):
+                text = data.decode("utf-8", "replace")
+                if "Zenith" not in text:
+                    return fail("manifest missing Zenith")
+                if "180x180" not in text:
+                    return fail("manifest missing 180x180")
+            elif len(data) < 32:
+                return fail("%s too small" % path)
             print("OK", path)
         try:
             with urllib.request.urlopen(base + "/vendor/lucide.min.js", timeout=5) as resp:
                 if resp.getcode() != 200:
-                    print("FAIL /vendor/lucide.min.js status", resp.getcode())
-                    return 1
+                    return fail("/vendor/lucide.min.js status %s" % resp.getcode())
                 lib = resp.read()
             if b"lucide" not in lib.lower()[:800]:
-                print("FAIL /vendor/lucide.min.js does not look like Lucide")
-                return 1
+                return fail("/vendor/lucide.min.js does not look like Lucide")
         except urllib.error.HTTPError as err:
-            print("FAIL /vendor/lucide.min.js status", err.code)
-            return 1
+            return fail("/vendor/lucide.min.js status %s" % err.code)
         print("OK /vendor/lucide.min.js")
+        try:
+            with urllib.request.urlopen(base + "/gate.html", timeout=5) as resp:
+                if resp.getcode() != 200:
+                    return fail("/gate.html status %s" % resp.getcode())
+                gate_body = resp.read().decode("utf-8", "replace")
+            if "heslo" not in gate_body:
+                return fail("/gate.html missing heslo")
+        except urllib.error.HTTPError as err:
+            return fail("/gate.html status %s" % err.code)
+        print("OK /gate.html")
         print("PASS")
         return 0
     finally:

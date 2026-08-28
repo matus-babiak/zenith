@@ -1,0 +1,6 @@
+{
+  "buildCommand": "node scripts/write-client-config.js",
+  "rewrites": [
+    { "source": "/((?!api/)(?!.*\\.).*)", "destination": "/index.html" }
+  ]
+}

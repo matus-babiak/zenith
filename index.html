@@ -3,9 +3,15 @@
 <head>
 <meta charset="utf-8">
 <base href="/">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="/icon-vrchol.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Zenith">
+<meta name="theme-color" content="#f5ead8">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
 <title>Zenith</title>
+<script src="./zenith-config.js"></script>
 <script src="./vendor/lucide.min.js"></script>
 <script src="./support.js"></script>
 </head>
@@ -16,7 +22,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Zenith">
 <meta name="theme-color" content="#f5ead8">
-<link rel="apple-touch-icon" href="/icon-vrchol.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
 <link rel="stylesheet" href="_ds/organic-eda8c3eb-c6eb-4bf8-95bd-88eeab88f6bf/styles.css">
 <script src="_ds/organic-eda8c3eb-c6eb-4bf8-95bd-88eeab88f6bf/_ds_bundle.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -650,6 +657,16 @@ class Component extends DCLogic {
     };
   }
 
+  static empty() {
+    return {
+      entries: { vdacnost: [], uspechy: [], hnevaju: [] },
+      ideas: [],
+      manifest: { text: '', lastViewed: null, sessions: 0 },
+      anchor: { time: '12:30', question: 'Som to stále ja, alebo len ďalší, čo iba reaguje? Tvorím tú realitu, alebo na ňu iba reagujem?', read: [] },
+      principles: []
+    };
+  }
+
   state = (() => {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem('zenith.v1') || 'null'); } catch (e) { saved = null; }
@@ -679,11 +696,13 @@ class Component extends DCLogic {
     window.addEventListener('popstate', this._onPop);
     Component.setDocTitle(this.state.route);
     this.paintIcons();
+    this.hydrateRemote();
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('popstate', this._onPop);
     if (this._timer) clearInterval(this._timer);
+    if (this._putTimer) clearTimeout(this._putTimer);
   }
   componentDidUpdate() { this.persist(); this.paintIcons(); }
 
@@ -696,13 +715,74 @@ class Component extends DCLogic {
     if (typeof requestAnimationFrame === 'function') requestAnimationFrame(run);
   }
 
-  persist() {
+  snapshot() {
     const s = this.state;
+    return { entries: s.entries, ideas: s.ideas, manifest: s.manifest, anchor: s.anchor, principles: s.principles };
+  }
+
+  applyPayload(data) {
+    if (!data || !data.entries) return;
+    this.setState({
+      entries: data.entries, ideas: data.ideas, manifest: data.manifest, anchor: data.anchor, principles: data.principles
+    });
+  }
+
+  authHeaders() {
+    const headers = { 'content-type': 'application/json' };
+    const key = (typeof window !== 'undefined' && window.ZENITH_SAVE_KEY) || '';
+    if (key) headers['x-zenith-key'] = key;
+    return headers;
+  }
+
+  putRemote(snap) {
+    fetch('/api/state', { method: 'PUT', headers: this.authHeaders(), body: JSON.stringify({ payload: snap }) }).catch(() => {});
+  }
+
+  hydrateRemote() {
+    this._hydrated = false;
+    this._allowRemote = false;
+    fetch('/api/state', { headers: this.authHeaders() }).then((r) => {
+      const ct = (r.headers.get('content-type') || '').toLowerCase();
+      if (!ct.includes('application/json')) return null;
+      if (r.status === 503 || r.status === 401) return null;
+      if (!r.ok) return null;
+      this._allowRemote = true;
+      return r.json();
+    }).then((data) => {
+      if (!data) return;
+      if (data.payload && data.payload.entries) {
+        this.applyPayload(data.payload);
+        try { localStorage.setItem('zenith.v1', JSON.stringify(this.snapshotFrom(data.payload))); } catch (e) { /* ignore */ }
+        return;
+      }
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem('zenith.v1') || 'null'); } catch (e) { saved = null; }
+      if (saved && saved.entries) {
+        this.putRemote(saved);
+      } else {
+        this.applyPayload(Component.empty());
+      }
+    }).catch(() => {
+      this._allowRemote = false;
+    }).finally(() => {
+      this._hydrated = true;
+      this.persist();
+    });
+  }
+
+  snapshotFrom(data) {
+    return { entries: data.entries, ideas: data.ideas, manifest: data.manifest, anchor: data.anchor, principles: data.principles };
+  }
+
+  persist() {
+    if (!this._hydrated) return;
+    const snap = this.snapshot();
     try {
-      localStorage.setItem('zenith.v1', JSON.stringify({
-        entries: s.entries, ideas: s.ideas, manifest: s.manifest, anchor: s.anchor, principles: s.principles
-      }));
+      localStorage.setItem('zenith.v1', JSON.stringify(snap));
     } catch (e) { /* storage full or blocked, prototype keeps working in memory */ }
+    if (!this._allowRemote) return;
+    if (this._putTimer) clearTimeout(this._putTimer);
+    this._putTimer = setTimeout(() => this.putRemote(snap), 500);
   }
 
   today() { return new Date().toISOString().slice(0, 10); }

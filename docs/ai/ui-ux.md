@@ -7,7 +7,8 @@
 
 - Web v prehliadači, nie App Store. Slovenčina.
 - Telefón (`šírka < 900`): sticky hlavička s logom vrchol a hamburgerom, overlay drawer s ikonami. Širšia obrazovka: statický ľavý sidebar (zbaliť / rozbaliť), ikona pri každej položke.
-- Ikona vrchol: `icon-vrchol.png` v koreni (aj `docs/ai/brand/`). Nočné čierne pozadie, Z + šípka. Zapojená v hlavičke, sidebare, draweri, `rel="icon"` a `apple-touch-icon`.
+- Ikona vrchol: `icon-vrchol.png` v chrome. Favicon `favicon-32.png`. iOS plocha: `apple-touch-icon.png` (180×180) v statickom `<head>` a `manifest.webmanifest` (standalone).
+- Na Vercel pred apkou: `gate.html` (heslo). Nie je položka menu. Lokálny python server túto bránu nemá.
 - Navigačné ikony: Lucide (`vendor/lucide.min.js`), čiarové, stroke 2.75. Mapovanie: Domov `home`, Vďačnosť `heart`, Úspechy `trophy`, Nápady `lightbulb`, Hnev `flame`, Manifestácia `sparkles`, Kotva `anchor`, Princípy `book-open`.
 - Input/textarea/select/button: `font-size: 16px`. Viewport má `maximum-scale=1` (zákaz zoomu pri písaní).
 

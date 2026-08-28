@@ -65,7 +65,8 @@ Nestavať druhú React apku v koreni.
 | Otázka | Stav |
 | --- | --- |
 | Presun z Claude Design HTML do iného stacku | kým to vlastník neschváli v zadaní, ostáva tento prototyp |
-| Zapojenie ikony vrchol do tohto webu | je, nočné čierne pozadie |
+| Zapojenie ikony vrchol do tohto webu | je, favicon + iOS 180px + manifest |
+| Neon / Vercel | kód pripravený, env nastavuje vlastník. Heslo vstupu: `SITE_PASSWORD` |
 | Fredoka vs Nunito | CLAUDE.md vs kód, pozri `architecture.md` |
 | Presné pravidlá 60-dňovej výzvy mimo toho, čo je v kóde | kód: 3–5 aktivít, 60 dní, naraz jedna ak `oneChallenge` |
 
@@ -81,6 +82,7 @@ Nestavať druhú React apku v koreni.
 | 2026-08-28 | Predvolená stránka Domov ako rozcestník | vlastník |
 | 2026-08-28 | React v koreni zmazaný | vlastník |
 | 2026-08-28 | Základ práce: dizajn od Claude, potom extrahovaný do **koreňa** Zenith | vlastník |
+| 2026-08-28 | Vercel URL len po zadaní hesla (`SITE_PASSWORD`) | vlastník |
 
 ## Pravidlo pre agentov
 
