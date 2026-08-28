@@ -114,6 +114,21 @@
     font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
     color: color-mix(in srgb, var(--color-text) 52%, transparent);
   }
+  .chip-row {
+    display: flex; flex-wrap: wrap; gap: 5px; align-items: stretch;
+  }
+  .chip-btn {
+    cursor: pointer; border-radius: 999px; padding: 5px 11px; font-size: 13px; line-height: 1.25;
+    min-height: 32px; border: 1px solid var(--chip-bd, var(--color-divider));
+    background: var(--chip-bg, transparent); color: var(--chip-fg, var(--color-text));
+    font-family: var(--font-body); box-sizing: border-box;
+  }
+  @media (max-width: 899px) {
+    .chip-row { flex-direction: column; gap: 6px; }
+    .chip-btn {
+      width: 100%; text-align: center; min-height: 40px; padding: 9px 14px; font-size: 14px;
+    }
+  }
 </style>
 </helmet>
 
@@ -236,9 +251,9 @@
             <textarea onInput="{{ j.setText }}" value="{{ j.text }}" placeholder="{{ j.ph }}" rows="3" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: var(--radius-md); border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)" style-focus="outline: 2px solid var(--color-accent); outline-offset: 1px; border-color: var(--color-accent-400)"></textarea>
             <div style="display: flex; flex-direction: column; gap: 7px">
               <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Oblasť života</span>
-              <div style="display: flex; flex-wrap: wrap; gap: 7px">
+              <div class="chip-row">
                 <sc-for list="{{ j.areaChips }}" as="a" hint-placeholder-count="7">
-                  <button onClick="{{ a.pick }}" style="cursor: pointer; border-radius: 999px; padding: 9px 14px; font-size: 14px; min-height: 40px; border: 1px solid {{ a.bd }}; background: {{ a.bg }}; color: {{ a.fg }}">{{ a.name }}</button>
+                  <button onClick="{{ a.pick }}" class="chip-btn" style="--chip-bg: {{ a.bg }}; --chip-fg: {{ a.fg }}; --chip-bd: {{ a.bd }}">{{ a.name }}</button>
                 </sc-for>
               </div>
             </div>
@@ -273,9 +288,9 @@
           </div>
 
           <h2 style="font-size: 22px; margin: 30px 0 6px">Staršie</h2>
-          <div style="display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px">
+          <div class="chip-row" style="margin-bottom: 14px">
             <sc-for list="{{ j.filters }}" as="f" hint-placeholder-count="8">
-              <button onClick="{{ f.pick }}" style="cursor: pointer; border-radius: 999px; padding: 8px 13px; font-size: 13.5px; min-height: 38px; border: 1px solid {{ f.bd }}; background: {{ f.bg }}; color: {{ f.fg }}">{{ f.name }}</button>
+              <button onClick="{{ f.pick }}" class="chip-btn" style="--chip-bg: {{ f.bg }}; --chip-fg: {{ f.fg }}; --chip-bd: {{ f.bd }}">{{ f.name }}</button>
             </sc-for>
           </div>
           <sc-if value="{{ j.pastEmpty }}" hint-placeholder-val="{{ false }}">
@@ -338,9 +353,9 @@
           <div style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px">
             <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Nový nápad</span>
             <textarea onInput="{{ ideas.setText }}" value="{{ ideas.text }}" placeholder="Čo ti vrtá v hlave?" rows="2" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: var(--radius-md); border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)" style-focus="outline: 2px solid var(--color-accent); outline-offset: 1px"></textarea>
-            <div style="display: flex; flex-wrap: wrap; gap: 7px">
+            <div class="chip-row">
               <sc-for list="{{ ideas.areaChips }}" as="a" hint-placeholder-count="7">
-                <button onClick="{{ a.pick }}" style="cursor: pointer; border-radius: 999px; padding: 9px 14px; font-size: 14px; min-height: 40px; border: 1px solid {{ a.bd }}; background: {{ a.bg }}; color: {{ a.fg }}">{{ a.name }}</button>
+                <button onClick="{{ a.pick }}" class="chip-btn" style="--chip-bg: {{ a.bg }}; --chip-fg: {{ a.fg }}; --chip-bd: {{ a.bd }}">{{ a.name }}</button>
               </sc-for>
             </div>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
@@ -349,9 +364,9 @@
             </div>
           </div>
 
-          <div style="display: flex; flex-wrap: wrap; gap: 7px; margin: 22px 0 14px">
+          <div class="chip-row" style="margin: 22px 0 14px">
             <sc-for list="{{ ideas.tabs }}" as="t" hint-placeholder-count="4">
-              <button onClick="{{ t.pick }}" style="cursor: pointer; border-radius: 999px; padding: 10px 15px; font-size: 14px; min-height: 42px; border: 1px solid {{ t.bd }}; background: {{ t.bg }}; color: {{ t.fg }}">{{ t.name }} <span style="opacity: 0.6">{{ t.count }}</span></button>
+              <button onClick="{{ t.pick }}" class="chip-btn" style="--chip-bg: {{ t.bg }}; --chip-fg: {{ t.fg }}; --chip-bd: {{ t.bd }}">{{ t.name }} <span style="opacity: 0.6">{{ t.count }}</span></button>
             </sc-for>
           </div>
 
@@ -502,9 +517,9 @@
               <textarea onInput="{{ pr.setBody }}" value="{{ pr.draft.body }}" rows="4" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.55; padding: 13px 16px; border-radius: var(--radius-md); border: 1px solid var(--color-accent-300); background: var(--color-bg); color: var(--color-text)"></textarea>
               <div style="display: flex; flex-direction: column; gap: 8px">
                 <span style="font-size: 12.5px; color: var(--color-accent-800)">Nákres</span>
-                <div style="display: flex; flex-wrap: wrap; gap: 7px">
+                <div class="chip-row">
                   <sc-for list="{{ pr.sketchOptions }}" as="s" hint-placeholder-count="3">
-                    <button onClick="{{ s.pick }}" style="cursor: pointer; border-radius: 999px; padding: 9px 14px; font-size: 13.5px; min-height: 42px; border: 1px solid {{ s.bd }}; background: {{ s.bg }}; color: {{ s.fg }}">{{ s.name }}</button>
+                    <button onClick="{{ s.pick }}" class="chip-btn" style="--chip-bg: {{ s.bg }}; --chip-fg: {{ s.fg }}; --chip-bd: {{ s.bd }}">{{ s.name }}</button>
                   </sc-for>
                 </div>
               </div>

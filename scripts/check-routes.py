@@ -137,6 +137,8 @@ def main():
                     return fail("/uspechy missing rankForCount")
                 if "rank-card" not in body:
                     return fail("/uspechy missing rank-card")
+                if "chip-btn" not in body:
+                    return fail("/uspechy missing chip-btn category style")
                 if "× S-tier celkovo" in body:
                     return fail("/uspechy still has S-tier counter")
                 idx = body.find("Označiť ako")
