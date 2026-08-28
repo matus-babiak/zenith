@@ -132,6 +132,16 @@ def main():
                 return fail("%s ended at Zenith.dc.html" % path)
             if "postgres://" in body:
                 return fail("%s body contains postgres://" % path)
+            if path == "/uspechy":
+                if "rankForCount" not in body:
+                    return fail("/uspechy missing rankForCount")
+                if "rank-card" not in body:
+                    return fail("/uspechy missing rank-card")
+                if "× S-tier celkovo" in body:
+                    return fail("/uspechy still has S-tier counter")
+                idx = body.find("Označiť ako")
+                if idx >= 0 and "S-tier" in body[idx : idx + 120]:
+                    return fail("/uspechy still has S-tier checkbox")
             if path == "/":
                 if "localStorage.getItem" in body or "localStorage.setItem" in body:
                     return fail("/ still reads or writes localStorage")

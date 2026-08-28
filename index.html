@@ -71,6 +71,49 @@
     background: color-mix(in srgb, var(--color-text) 7%, transparent); color: var(--color-text);
     display: grid; place-items: center; font-size: 18px; line-height: 1;
   }
+  .rank-card {
+    position: relative; overflow: hidden; border-radius: 20px; padding: 20px 18px 18px;
+    display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px;
+    border: 1px solid color-mix(in srgb, var(--rank-accent) 45%, var(--color-divider));
+    background: linear-gradient(145deg, color-mix(in srgb, var(--rank-accent) 16%, var(--color-neutral-100)), var(--color-neutral-100));
+    box-shadow: 0 8px 28px color-mix(in srgb, var(--rank-glow) 55%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent);
+  }
+  .rank-card::before {
+    content: ""; position: absolute; inset: -40% auto auto -20%; width: 55%; height: 120%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--rank-glow) 70%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  .rank-top { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
+  .rank-emblem {
+    width: 72px; height: 72px; flex: 0 0 72px; border-radius: 18px;
+    display: grid; place-items: center; font-family: var(--font-heading); font-size: 28px; font-weight: 900;
+    color: #fff; letter-spacing: -0.03em;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--rank-emblem) 88%, #fff), var(--rank-emblem));
+    border: 2px solid color-mix(in srgb, #fff 45%, var(--rank-accent));
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--rank-glow) 80%, transparent), inset 0 -3px 8px color-mix(in srgb, #000 18%, transparent);
+  }
+  .rank-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .rank-band {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--rank-accent) 78%, var(--color-text));
+  }
+  .rank-label { margin: 0; font-family: var(--font-heading); font-size: clamp(26px, 7vw, 34px); line-height: 1; letter-spacing: -0.02em; }
+  .rank-status { margin: 0; font-size: 14px; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty; }
+  .rank-track {
+    height: 10px; border-radius: 999px; overflow: hidden; position: relative; z-index: 1;
+    background: color-mix(in srgb, var(--color-text) 10%, var(--color-bg));
+    box-shadow: inset 0 1px 3px color-mix(in srgb, #000 12%, transparent);
+  }
+  .rank-fill {
+    height: 100%; border-radius: 999px; width: var(--rank-pct);
+    background: linear-gradient(90deg, var(--rank-emblem), var(--rank-accent));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--rank-glow) 90%, transparent);
+    transition: width 0.35s ease;
+  }
+  .rank-legend-label {
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text) 52%, transparent);
+  }
 </style>
 </helmet>
 
@@ -161,8 +204,32 @@
       <sc-if value="{{ v.journal }}" hint-placeholder-val="{{ false }}">
         <section>
           <h1 style="font-size: clamp(30px, 8vw, 44px); margin: 0 0 8px">{{ j.title }}</h1>
-          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 6px; text-wrap: pretty; width: 100%">{{ j.lead }}</p>
-          <p style="font-size: 13px; color: var(--color-accent-700); margin: 0 0 20px">{{ j.counter }}</p>
+          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 20px; text-wrap: pretty; width: 100%">{{ j.lead }}</p>
+
+          <sc-if value="{{ j.rank }}" hint-placeholder-val="{{ false }}">
+            <div class="rank-card" style="--rank-accent: {{ j.rank.accent }}; --rank-glow: {{ j.rank.glow }}; --rank-emblem: {{ j.rank.emblem }}; --rank-pct: {{ j.rank.progressPct }}">
+              <div class="rank-top">
+                <div class="rank-emblem">{{ j.rank.label }}</div>
+                <div class="rank-meta">
+                  <span class="rank-band">{{ j.rank.band }}</span>
+                  <h2 class="rank-label">{{ j.rank.title }}</h2>
+                  <p class="rank-status">{{ j.rank.statusText }}</p>
+                </div>
+              </div>
+              <sc-if value="{{ j.rank.showLegendBar }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 6px; position: relative; z-index: 1">
+                  <span class="rank-legend-label">Cesta k Legende</span>
+                  <div class="rank-track"><div class="rank-fill" style="--rank-pct: {{ j.rank.legendPct }}; width: {{ j.rank.legendPct }}"></div></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ j.rank.showRankBar }}" hint-placeholder-val="{{ true }}">
+                <div class="rank-track"><div class="rank-fill"></div></div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ j.counter }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size: 13px; color: var(--color-accent-700); margin: 0 0 20px">{{ j.counter }}</p>
+          </sc-if>
 
           <div style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px">
             <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ j.formLabel }}</span>
@@ -175,12 +242,6 @@
                 </sc-for>
               </div>
             </div>
-            <sc-if value="{{ j.hasTier }}" hint-placeholder-val="{{ false }}">
-              <label style="display: flex; align-items: center; gap: 10px; font-size: 14.5px; cursor: pointer; min-height: 44px">
-                <input type="checkbox" checked="{{ j.tier }}" onChange="{{ j.toggleTier }}" style="width: 20px; height: 20px; accent-color: var(--color-accent)">
-                <span>Označiť ako <strong>S-tier</strong>, na toto som naozaj hrdý</span>
-              </label>
-            </sc-if>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
               <button onClick="{{ j.save }}" class="btn btn-primary" style="border-radius: 999px; min-height: 46px; padding-inline: 22px; font-size: 15px">{{ j.saveLabel }}</button>
               <sc-if value="{{ j.editing }}" hint-placeholder-val="{{ false }}">
@@ -202,9 +263,6 @@
                 <p style="margin: 0; font-size: 16px; line-height: 1.5; text-wrap: pretty">{{ e.text }}</p>
                 <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
                   <span style="font-size: 12px; padding: 4px 11px; border-radius: 999px; background: {{ e.tint }}; color: {{ e.ink }}">{{ e.areaName }}</span>
-                  <sc-if value="{{ e.tier }}" hint-placeholder-val="{{ false }}">
-                    <span style="font-size: 12px; padding: 4px 11px; border-radius: 999px; background: var(--color-accent); color: var(--color-bg)">S-tier</span>
-                  </sc-if>
                   <span style="margin-left: auto; display: flex; gap: 2px">
                     <button onClick="{{ e.edit }}" class="btn btn-ghost" style="font-size: 13px; min-height: 40px">Upraviť</button>
                     <button onClick="{{ e.del }}" class="btn btn-ghost" style="font-size: 13px; min-height: 40px; color: var(--color-neutral-700)">Zmazať</button>
@@ -231,7 +289,7 @@
                   <article style="border-left: 3px solid {{ e.dot }}; padding: 4px 0 4px 13px; display: flex; flex-direction: column; gap: 4px">
                     <p style="margin: 0; font-size: 15.5px; line-height: 1.5; text-wrap: pretty">{{ e.text }}</p>
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
-                      <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ e.areaName }}{{ e.tierMark }}</span>
+                      <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ e.areaName }}</span>
                       <span style="display: flex; gap: 2px">
                         <button onClick="{{ e.edit }}" class="btn btn-ghost" style="font-size: 12.5px; min-height: 36px">Upraviť</button>
                         <button onClick="{{ e.del }}" class="btn btn-ghost" style="font-size: 12.5px; min-height: 36px; color: var(--color-neutral-700)">Zmazať</button>
@@ -594,7 +652,7 @@ class Component extends DCLogic {
 
   static TILES = {
     vdacnost: 'Denne 1 až 5 vecí, zaradených do oblasti života.',
-    uspechy: 'Na čo si hrdý. S-tier pre to najsilnejšie.',
+    uspechy: 'Každý zápis posúva tvoju triedu vyššie.',
     napady: 'Zrušiť, alebo z jedného urobiť 60-dňovú výzvu.',
     hnevaju: 'Odkladisko mentálneho balastu. Nie to-do.',
     manifestacia: 'Jeden scenár, denne 2–3 minúty pri ňom.',
@@ -602,10 +660,90 @@ class Component extends DCLogic {
     principy: 'Poznámky z kapitoly ako použiteľný princíp.'
   };
 
+  static RANKS = [
+    { id: 'pred-d', label: 'Pred D', band: 'Nováčik', min: 0, accent: '#8b7355', glow: '#8b735566', emblem: '#6b5344' },
+    { id: 'd-minus', label: 'D−', band: 'Bronz', min: 5, accent: '#b87333', glow: '#b8733366', emblem: '#9a6228' },
+    { id: 'd', label: 'D', band: 'Bronz', min: 15, accent: '#cd7f32', glow: '#cd7f3266', emblem: '#a86528' },
+    { id: 'd-plus', label: 'D+', band: 'Bronz', min: 25, accent: '#d4924a', glow: '#d4924a66', emblem: '#b87a38' },
+    { id: 'c-minus', label: 'C−', band: 'Striebro', min: 35, accent: '#9aa3ad', glow: '#9aa3ad66', emblem: '#7a828a' },
+    { id: 'c', label: 'C', band: 'Striebro', min: 50, accent: '#c0c0c0', glow: '#c0c0c066', emblem: '#989898' },
+    { id: 'c-plus', label: 'C+', band: 'Striebro', min: 65, accent: '#d4d8dc', glow: '#d4d8dc66', emblem: '#a8adb2' },
+    { id: 'b-minus', label: 'B−', band: 'Zlato', min: 75, accent: '#d4af37', glow: '#d4af3766', emblem: '#b8922a' },
+    { id: 'b', label: 'B', band: 'Zlato', min: 90, accent: '#ffd700', glow: '#ffd70066', emblem: '#daa520' },
+    { id: 'b-plus', label: 'B+', band: 'Zlato', min: 110, accent: '#ffe066', glow: '#ffe06666', emblem: '#e6b800' },
+    { id: 'a-minus', label: 'A−', band: 'Platina', min: 130, accent: '#59c3e4', glow: '#59c3e466', emblem: '#3aa8cc' },
+    { id: 'a', label: 'A', band: 'Platina', min: 155, accent: '#7dd3fc', glow: '#7dd3fc66', emblem: '#4db8e8' },
+    { id: 'a-plus', label: 'A+', band: 'Platina', min: 180, accent: '#a5e4ff', glow: '#a5e4ff66', emblem: '#6ecbf0' },
+    { id: 's-minus', label: 'S−', band: 'Diamant', min: 185, accent: '#9b59b6', glow: '#9b59b688', emblem: '#7d3cff' },
+    { id: 's', label: 'S', band: 'Diamant', min: 192, accent: '#b07cff', glow: '#b07cff88', emblem: '#8b5cf6' },
+    { id: 's-plus', label: 'S+', band: 'Diamant', min: 200, accent: '#c084fc', glow: '#c084fc99', emblem: '#9333ea' }
+  ];
+
+  static LEGEND_MIN = 300;
+
+  static rankForCount(n) {
+    const count = Math.max(0, n | 0);
+    const ranks = Component.RANKS;
+    let idx = 0;
+    for (let i = ranks.length - 1; i >= 0; i--) {
+      if (count >= ranks[i].min) { idx = i; break; }
+    }
+    const cur = ranks[idx];
+    const next = idx < ranks.length - 1 ? ranks[idx + 1] : null;
+    const isLegend = count >= Component.LEGEND_MIN;
+    const isMax = count >= 200;
+    let progress = 0;
+    let nextLabel = '';
+    if (!isMax && next) {
+      progress = (count - cur.min) / (next.min - cur.min);
+      nextLabel = next.label;
+    } else if (isMax && !isLegend) {
+      progress = 1;
+      nextLabel = 'Legenda';
+    } else if (isLegend) {
+      progress = 1;
+    }
+    const legendProgress = isMax ? Math.min(1, (count - 200) / (Component.LEGEND_MIN - 200)) : 0;
+    let statusText = '';
+    if (isLegend) {
+      statusText = count + ' úspechov · Legenda';
+    } else if (isMax) {
+      statusText = count + '+ úspechov · Legenda o ' + (Component.LEGEND_MIN - count);
+    } else if (cur.id === 'pred-d') {
+      statusText = count + ' úspechov · ešte ' + (5 - count) + ' do D−';
+    } else if (next) {
+      statusText = count + ' úspechov · ešte ' + (next.min - count) + ' do ' + next.label;
+    }
+    const legendColors = { accent: '#ffcc00', glow: '#ffcc0099', emblem: '#ffb800' };
+    const colors = isLegend ? legendColors : cur;
+    return {
+      id: cur.id,
+      label: isLegend ? '★' : cur.label,
+      title: isLegend ? 'Legenda' : ('Trieda ' + cur.label),
+      band: isLegend ? 'Legenda' : cur.band,
+      min: cur.min,
+      next: next ? next.min : (isMax && !isLegend ? Component.LEGEND_MIN : null),
+      nextLabel,
+      progress: Math.max(0, Math.min(1, progress)),
+      progressPct: Math.round(Math.max(0, Math.min(1, progress)) * 100) + '%',
+      legendProgress,
+      legendPct: Math.round(legendProgress * 100) + '%',
+      isMax,
+      isLegend,
+      count,
+      statusText,
+      accent: colors.accent,
+      glow: colors.glow,
+      emblem: colors.emblem,
+      showLegendBar: isMax,
+      showRankBar: !isMax
+    };
+  }
+
   static J = {
-    vdacnost: { key: 'vdacnost', title: 'Vďačnosť', lead: 'Každý deň 1 až 5 vecí. Jeden zápis patrí k jednej oblasti života.', ph: 'Za čo si dnes vďačný?', limit: 5, tier: false, empty: 'Dnes ešte nič. Stačí jedna vec, nemusí byť veľká.' },
-    uspechy: { key: 'uspechy', title: 'Úspechy', lead: 'Denník hrdosti na seba. Bez rebríčkov a bez porovnávania s kýmkoľvek.', ph: 'Čo sa ti podarilo?', limit: 0, tier: true, empty: 'Dnes ešte nič. Aj malý krok sa počíta ako úspech.' },
-    hnevaju: { key: 'hnevaju', title: 'Veci, ktoré ma hnevajú', lead: 'Miesto na to, čo ťa žerie. Vypíš to a nechaj byť, nič sa odtiaľ nemení na úlohu.', ph: 'Čo ťa dnes žerie?', limit: 0, tier: false, empty: 'Dnes nič. To je dobrá správa.' }
+    vdacnost: { key: 'vdacnost', title: 'Vďačnosť', lead: 'Každý deň 1 až 5 vecí. Jeden zápis patrí k jednej oblasti života.', ph: 'Za čo si dnes vďačný?', limit: 5, empty: 'Dnes ešte nič. Stačí jedna vec, nemusí byť veľká.' },
+    uspechy: { key: 'uspechy', title: 'Úspechy', lead: 'Každý zápis ťa posúva vyššie. Bez porovnávania s kýmkoľvek, len s vlastnou minulosťou.', ph: 'Čo sa ti podarilo?', limit: 0, empty: 'Dnes ešte nič. Aj malý krok sa počíta ako úspech.' },
+    hnevaju: { key: 'hnevaju', title: 'Veci, ktoré ma hnevajú', lead: 'Miesto na to, čo ťa žerie. Vypíš to a nechaj byť, nič sa odtiaľ nemení na úlohu.', ph: 'Čo ťa dnes žerie?', limit: 0, empty: 'Dnes nič. To je dobrá správa.' }
   };
 
   static STATES = [
@@ -638,7 +776,7 @@ class Component extends DCLogic {
       route: typeof location !== 'undefined' ? Component.routeFromPath(location.pathname) : 'home',
       drawer: false, navExpanded: true, w: typeof window !== 'undefined' ? window.innerWidth : 1200,
       entries: data.entries, ideas: data.ideas, manifest: data.manifest, anchor: data.anchor, principles: data.principles,
-      draftText: '', draftArea: 'zdravie', draftTier: false, editId: null,
+      draftText: '', draftArea: 'zdravie', editId: null,
       filterArea: 'vsetky',
       ideaText: '', ideaArea: 'praca', ideaTab: 'novy',
       chalFor: null, chalFields: ['', '', ''], chalError: '',
@@ -768,15 +906,15 @@ class Component extends DCLogic {
       const list = s.entries[k].slice();
       if (s.editId) {
         const i = list.findIndex(e => e.id === s.editId);
-        if (i >= 0) list[i] = Object.assign({}, list[i], { text, area: s.draftArea, tier: cfg.tier ? s.draftTier : undefined });
+        if (i >= 0) list[i] = Object.assign({}, list[i], { text, area: s.draftArea });
       } else {
         if (cfg.limit) {
           const todayCount = list.filter(e => e.date === this.today()).length;
           if (todayCount >= cfg.limit) return {};
         }
-        list.unshift({ id: 'e' + Date.now(), text, area: s.draftArea, date: this.today(), tier: cfg.tier ? s.draftTier : undefined });
+        list.unshift({ id: 'e' + Date.now(), text, area: s.draftArea, date: this.today() });
       }
-      return { entries: Object.assign({}, s.entries, { [k]: list }), draftText: '', draftTier: false, editId: null };
+      return { entries: Object.assign({}, s.entries, { [k]: list }), draftText: '', editId: null };
     });
   }
 
@@ -872,31 +1010,30 @@ class Component extends DCLogic {
         const g = groups.find(x => x.date === e.date);
         const row = {
           text: e.text, areaName: this.area(e.area).name, dot: this.area(e.area).c,
-          tierMark: e.tier ? ' · S-tier' : '',
-          edit: () => this.setState({ draftText: e.text, draftArea: e.area, draftTier: !!e.tier, editId: e.id }),
+          edit: () => this.setState({ draftText: e.text, draftArea: e.area, editId: e.id }),
           del: () => this.setState(st => ({ entries: Object.assign({}, st.entries, { [jk]: st.entries[jk].filter(x => x.id !== e.id) }) }))
         };
         if (g) g.items.push(row); else groups.push({ date: e.date, label: this.fmt(e.date), items: [row] });
       });
       const full = cfg.limit && todays.length >= cfg.limit && !s.editId;
+      const rank = jk === 'uspechy' ? Component.rankForCount(list.length) : null;
       j = {
-        title: cfg.title, lead: cfg.lead, ph: cfg.ph, hasTier: cfg.tier, tier: s.draftTier,
-        counter: cfg.limit ? 'Dnes ' + todays.length + ' z ' + cfg.limit : (jk === 'uspechy' ? s.entries.uspechy.filter(e => e.tier).length + ' × S-tier celkovo' : list.length + ' zápisov celkovo'),
+        title: cfg.title, lead: cfg.lead, ph: cfg.ph, rank,
+        counter: cfg.limit ? 'Dnes ' + todays.length + ' z ' + cfg.limit : (jk === 'uspechy' ? '' : list.length + ' zápisov celkovo'),
         formLabel: s.editId ? 'Upravuješ zápis' : 'Nový zápis',
         saveLabel: s.editId ? 'Uložiť zmenu' : 'Pridať zápis',
         hint: full ? 'Päť na dnes je maximum. Zvyšok si nechaj na zajtra.' : (s.editId ? '' : 'Jeden zápis, jedna oblasť.'),
         editing: !!s.editId, text: s.draftText,
         setText: (e) => this.setState({ draftText: e.target.value }),
-        toggleTier: (e) => this.setState({ draftTier: e.target.checked }),
         save: () => this.saveEntry(),
-        cancel: () => this.setState({ editId: null, draftText: '', draftTier: false }),
+        cancel: () => this.setState({ editId: null, draftText: '' }),
         areaChips: AREAS.map(a => Object.assign({ name: a.name, pick: () => this.setState({ draftArea: a.id }) }, this.chip(s.draftArea === a.id, a))),
         filters: [{ id: 'vsetky', name: 'Všetky oblasti' }].concat(AREAS).map(a => Object.assign(
           { name: a.name, pick: () => this.setState({ filterArea: a.id }) },
           this.chip(s.filterArea === a.id, a.c ? a : null))),
         today: todays.map(e => ({
-          text: e.text, areaName: this.area(e.area).name, tint: this.area(e.area).tint, ink: this.area(e.area).ink, tier: !!e.tier,
-          edit: () => this.setState({ draftText: e.text, draftArea: e.area, draftTier: !!e.tier, editId: e.id }),
+          text: e.text, areaName: this.area(e.area).name, tint: this.area(e.area).tint, ink: this.area(e.area).ink,
+          edit: () => this.setState({ draftText: e.text, draftArea: e.area, editId: e.id }),
           del: () => this.setState(st => ({ entries: Object.assign({}, st.entries, { [jk]: st.entries[jk].filter(x => x.id !== e.id) }) }))
         })),
         todayEmpty: todays.length === 0, emptyToday: cfg.empty,
@@ -1079,10 +1216,18 @@ class Component extends DCLogic {
       },
       home: {
         date: this.fmt(today),
-        tiles: Component.NAV.filter(n => n.r !== 'home').map(n => ({
-          n: n.n, sub: Component.TILES[n.r], go: this.go(n.r),
-          dot: this.area(['zdravie', 'rozvoj', 'praca', 'financie', 'manzelstvo', 'rodina', 'priatelia'][Component.NAV.indexOf(n) - 1]).c
-        }))
+        tiles: Component.NAV.filter(n => n.r !== 'home').map(n => {
+          let sub = Component.TILES[n.r];
+          if (n.r === 'uspechy') {
+            const rk = Component.rankForCount(s.entries.uspechy.length);
+            const tierLabel = rk.isLegend ? 'Legenda' : rk.label;
+            sub = rk.count + ' úspechov · trieda ' + tierLabel;
+          }
+          return {
+            n: n.n, sub, go: this.go(n.r),
+            dot: this.area(['zdravie', 'rozvoj', 'praca', 'financie', 'manzelstvo', 'rodina', 'priatelia'][Component.NAV.indexOf(n) - 1]).c
+          };
+        })
       }
     };
   }
