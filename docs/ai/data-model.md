@@ -8,7 +8,7 @@
 - Tabuľka Neon: `zenith_state` (id=1, `payload` JSONB). Vzniká `CREATE TABLE IF NOT EXISTS`, žiadny DROP.
 - API: `GET`/`PUT` `/api/state`. Telo PUT: `{ "payload": { entries, ideas, manifest, anchor, principles } }`.
 - Env: `DATABASE_URL`, `ZENITH_SAVE_KEY` (hlavička `x-zenith-key`), `SITE_PASSWORD` (cookie brána na Vercel). Hodnoty nie sú v gite.
-- Pri načítaní: prázdny stav v pamäti, potom `GET /api/state`. Ak Neon prázdny, ostane prázdny (`Component.empty()`). Ukážkové dáta sa nenačítavajú.
+- Pri načítaní: prázdny stav v pamäti, potom `GET /api/state`. Ak Neon prázdny alebo starý formát (`schema` ≠ 2), server vráti prázdny stav a prepíše riadok. Ukážkové dáta sa nenačítavajú.
 - Ak API nie je (lokálny `serve.py`, 503, 401), zápisy sa neukladajú. Na produkcii (Vercel + env) ide všetko do Neon.
 - Starý kľúč `localStorage` `zenith.v1` sa pri štarte vymaže (jednorazový cleanup v prehliadači).
 - Jednorazové vyčistenie Neon: `node scripts/clear-neon-state.js --confirm` (s `DATABASE_URL`) alebo `--via-api https://…` (s `ZENITH_SAVE_KEY`).

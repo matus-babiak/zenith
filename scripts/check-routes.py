@@ -79,6 +79,8 @@ def main():
         return fail("api/state.js contains a connection string")
     if "CREATE TABLE IF NOT EXISTS zenith_state" not in api_txt:
         return fail("api/state.js missing CREATE TABLE IF NOT EXISTS")
+    if "needsMigration" not in api_txt:
+        return fail("api/state.js missing needsMigration")
     if "DROP TABLE" in api_txt.upper():
         return fail("api/state.js contains DROP")
     clear_script = ROOT / "scripts" / "clear-neon-state.js"

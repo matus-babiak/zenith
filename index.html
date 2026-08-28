@@ -623,6 +623,7 @@ class Component extends DCLogic {
 
   static empty() {
     return {
+      schema: 2,
       entries: { vdacnost: [], uspechy: [], hnevaju: [] },
       ideas: [],
       manifest: { text: '', lastViewed: null, sessions: 0 },
@@ -680,7 +681,7 @@ class Component extends DCLogic {
 
   snapshot() {
     const s = this.state;
-    return { entries: s.entries, ideas: s.ideas, manifest: s.manifest, anchor: s.anchor, principles: s.principles };
+    return { schema: 2, entries: s.entries, ideas: s.ideas, manifest: s.manifest, anchor: s.anchor, principles: s.principles };
   }
 
   applyPayload(data) {

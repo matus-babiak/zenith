@@ -4,6 +4,7 @@
 const { neon } = require("@neondatabase/serverless");
 
 const EMPTY = {
+  schema: 2,
   entries: { vdacnost: [], uspechy: [], hnevaju: [] },
   ideas: [],
   manifest: { text: "", lastViewed: null, sessions: 0 },
