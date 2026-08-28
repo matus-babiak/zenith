@@ -39,6 +39,7 @@ Zdroj: `index.html`, `CLAUDE.md`.
 3. **Nápady:** z `novy` ide `zruseny` alebo `vyzva`. Z výzvy `hotovo`. Predvolene naraz **jedna** výzva (`oneChallenge` default true).
 4. **Výzva:** 3 až 5 denných aktivít. Kód hlási chybu pod 3. Maximum polí 5.
 5. **Persistencia len cez Neon.** Prehliadač neukladá dáta. Bez fungujúceho `/api/state` sa nové zápisy nezachovajú.
+6. **Úspechy: automatický rebríček.** Trieda sa počíta z celkového počtu zápisov (`Component.rankForCount`). Manuálny S-tier pri jednotlivých zápisoch nie je. Prah S+ = 200, Legenda = 300.
 
 ### Dôležité (apka)
 

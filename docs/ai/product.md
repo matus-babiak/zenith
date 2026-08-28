@@ -32,7 +32,7 @@ V kóde ako `Component.AREAS`:
 | --- | --- |
 | Domov | Rozcestník: dlaždice na časti, mimo sidebaru |
 | Denník vďačností | 1–5 vecí za deň, podľa oblasti, história |
-| Denník úspechov | Hrdosť, voliteľné S-tier, podľa oblasti |
+| Denník úspechov | Hrdosť, automatický rebríček podľa počtu zápisov (S+ pri 200, Legenda pri 300), podľa oblasti |
 | Nápady | Stavy Nový → Zrušený **alebo** 60-dňová výzva (3–5 aktivít) → Hotovo. Predvolene naraz jedna výzva |
 | Veci, ktoré ma hnevajú | Mentálny balast podľa oblasti, nie to-do |
 | Manifestácia | Jeden scenár, vizualizácia s odpočtom (predvolene 150 s) |

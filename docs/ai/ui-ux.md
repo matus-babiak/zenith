@@ -44,7 +44,7 @@ Domov: mriežka dlaždíc na tie isté časti (bez položky Domov). Mazanie vše
 | Stránka | Čo tam je |
 | --- | --- |
 | Domov | Dátum, nadpis, lead, dlaždice častí |
-| Vďačnosť / Úspechy / Hnev | Formulár (text + oblasť života), dnes / staršie, úprava a zmazanie. Vďačnosť: max 5 za deň. Úspechy: voliteľné S-tier |
+| Vďačnosť / Úspechy / Hnev | Formulár (text + oblasť života), dnes / staršie, úprava a zmazanie. Vďačnosť: max 5 za deň. Úspechy: herná rank karta (automatický rebríček podľa počtu zápisov, S+ pri 200, Legenda pri 300) |
 | Nápady | Nový zápis, taby stavov (Nový, Zrušený, 60-dňová výzva, Hotovo), bežiaca výzva (3–5 aktivít, deň z 60), dialóg spustenia výzvy. Predvolene naraz len jedna výzva (`oneChallenge`) |
 | Manifestácia | Jeden scenár, úprava, vizualizácia s odpočtom (predvolene 150 s), vsuvky z vďačnosti/úspechov |
 | Kotva | Čas, otázka, „prečítané dnes“, týždeň. Systémové upozornenie predvolene vypnuté (`anchorNotify`) |

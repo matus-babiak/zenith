@@ -19,7 +19,9 @@ Ukladá sa len: `entries`, `ideas`, `manifest`, `anchor`, `principles`. Routa, d
 
 Sedem oblastí (id v kóde): `zdravie`, `rozvoj`, `praca`, `financie`, `manzelstvo`, `rodina`, `priatelia`.
 
-**Zápis denníka** (`entries.vdacnost` | `uspechy` | `hnevaju`): `id`, `text`, `area`, `date` (ISO deň). Úspechy môžu mať `tier` (boolean, S-tier).
+**Zápis denníka** (`entries.vdacnost` | `uspechy` | `hnevaju`): `id`, `text`, `area`, `date` (ISO deň). Pole `tier` v starých záznamoch sa ignoruje.
+
+**Rebríček úspechov:** automaticky z `entries.uspechy.length`. Triedy od Pred D (0) po S+ (200+), bonus **Legenda** pri 300+. Logika: `Component.RANKS`, `Component.rankForCount(n)` v `index.html`.
 
 **Nápad** (`ideas`): `id`, `text`, `area`, `state` (`novy` | `zruseny` | `vyzva` | `hotovo`), `created`. Pri výzve navyše `start`, `acts` (3–5 reťazcov), `log` (mapa dátum → indexy splnených aktivít).
 
