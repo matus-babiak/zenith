@@ -1,0 +1,15 @@
+---
+description: Text, písmo a lead v Zenith UI — CLAUDE.md
+globs: index.html,zenith-sketch.js,CLAUDE.md
+alwaysApply: false
+---
+
+# Zenith — UI text (CLAUDE.md)
+
+Zdroj: `CLAUDE.md`. Platí pri akejkoľvek zmene rozhrania v koreni (`index.html`).
+
+- V textoch v rozhraní ani v obsahu nikdy nepoužívaj pomlčku „—“ (em dash). Namiesto nej čiarka, dvojbodka alebo nová veta.
+- Displejový font musí podporovať slovenské mäkčene (ď, ť, ľ, ň, ŕ). Caprasimo nie. CLAUDE.md predpisuje Fredoka. Kód dnes používa Nunito 900: konflikt pomenuj, neprepisuj ticho. Nové nadpisy nedávaj do Caprasimo.
+- Úvodný odstavec (lead) na každej stránke ide na 100 % šírky obsahu, bez fixného max-width.
+
+Nemeň apku bez schváleného `/zenith-implement`.

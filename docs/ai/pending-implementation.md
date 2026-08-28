@@ -1,3 +1,3 @@
-Žiadne čakajúce implementačné zadanie.
+# Implementačné zadanie — Zenith
 
-Spusti `/zenith-plan`, po schválení sem Planning Agent uloží zadanie. Potom `/zenith-implement`.
+Žiadne schválené zadanie. Najprv `/zenith-plan`, potom schválenie, potom `/zenith-implement`.

@@ -1,27 +1,23 @@
 # Zenith
 
-Toto je projekt **Zenith**.
-
 Repozitár: [github.com/matus-babiak/zenith](https://github.com/matus-babiak/zenith).
 
-Aplikácia ešte nie je postavená. V priečinku je zatiaľ AI development systém: dokumentácia pravdy, pravidlá a dvaja agenti — plánovanie oddelené od implementácie.
+**Aplikácia:** `index.html` v koreni (dizajn od Claude, extrahovaný sem).  
+**AI systém:** `docs/ai/`, `/zenith-plan`, `/zenith-implement`, `/zenith-rebuild`.  
+**Pravidlá textu:** `CLAUDE.md`.
 
-## Ako s tým pracovať
-
-Napíš ľudskou vetou, čo chceš, a spusti plánovanie:
-
-```
-/zenith-plan
-```
-
-Agent sa najprv spýta na nejasnosti, navrhne najmenšiu zmenu a počká na tvoje schválenie. Až potom:
+## Spustiť lokálne
 
 ```
-/zenith-implement
+python3 scripts/serve.py
 ```
+
+Otvor [http://127.0.0.1:4173/](http://127.0.0.1:4173/). Cesty ako `/uspechy` fungujú len s týmto serverom (SPA fallback), nie s holým `python3 -m http.server`.
+
+## Ako pracovať
+
+1. `/zenith-rebuild` — docs = dnešok  
+2. `/zenith-plan` — návrh, schválenie  
+3. `/zenith-implement` — kód podľa zadania  
 
 Podrobnosti: [docs/ai/README.md](docs/ai/README.md).
-
-## Čo tu zatiaľ nie je
-
-Žiadny aplikačný kód, databáza, testy ani zvolený technický stack. To je zámer — najprv dohoda, potom stavba.

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/icon-vrchol.png">
+<title>Zenith</title>
+<script src="./vendor/lucide.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Zenith">
+<meta name="theme-color" content="#f5ead8">
+<link rel="apple-touch-icon" href="/icon-vrchol.png">
+<link rel="stylesheet" href="_ds/organic-eda8c3eb-c6eb-4bf8-95bd-88eeab88f6bf/styles.css">
+<script src="_ds/organic-eda8c3eb-c6eb-4bf8-95bd-88eeab88f6bf/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Baloo+2:wght@700;800&amp;display=swap">
+<style>
+  /* Caprasimo nemá slovenské mäkčene (ď, ť, ľ, ň). Nunito v reze 900 je oblá, tučná a má overenú plnú slovenskú sadu. */
+  :root { --font-heading: "Nunito", "Baloo 2", system-ui, sans-serif; --font-heading-weight: 900; }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 900; letter-spacing: -0.015em; }
+  html, body { margin: 0; background: var(--color-bg); -webkit-text-size-adjust: 100%; }
+  input, textarea, select, button { font-family: var(--font-body); font-size: 16px; }
+  textarea, input { -webkit-appearance: none; }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent-800); }
+  @keyframes zslide { from { transform: translateX(-16px); opacity: 0 } to { transform: none; opacity: 1 } }
+  @keyframes zfade { from { opacity: 0 } to { opacity: 1 } }
+  .z-logo { width: 36px; height: 36px; border-radius: 11px; display: block; object-fit: cover; flex: 0 0 36px; }
+  .z-logo-lg { width: 44px; height: 44px; border-radius: 13px; flex: 0 0 44px; }
+  .nav-lucide, svg.lucide {
+    width: 20px; height: 20px; flex: 0 0 20px;
+    stroke: currentColor; fill: none;
+  }
+  .hb {
+    width: 44px; height: 44px; flex: 0 0 44px; padding: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-divider));
+    background: var(--color-bg); cursor: pointer; border-radius: 14px;
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-text) 8%, transparent);
+  }
+  .hb span { display: block; width: 18px; height: 2.2px; border-radius: 999px; background: var(--color-text); }
+  .drawer-sheet {
+    position: absolute; inset: 0 auto 0 0; width: min(88vw, 340px); box-sizing: border-box;
+    padding: 22px 18px 20px; background: var(--color-surface);
+    display: flex; flex-direction: column; gap: 18px; overflow-y: auto;
+    border-radius: 0 28px 28px 0;
+    box-shadow: 16px 0 48px color-mix(in srgb, var(--color-neutral-900) 22%, transparent);
+    animation: zslide 0.2s ease-out;
+  }
+  .drawer-close {
+    width: 40px; height: 40px; flex: 0 0 40px; border: 0; cursor: pointer; border-radius: 999px;
+    background: color-mix(in srgb, var(--color-text) 8%, var(--color-bg)); color: var(--color-text);
+    font-size: 22px; line-height: 1;
+  }
+  .nav-toggle {
+    width: 36px; height: 36px; flex: 0 0 36px; border: 0; cursor: pointer; border-radius: 12px;
+    background: color-mix(in srgb, var(--color-text) 7%, transparent); color: var(--color-text);
+    display: grid; place-items: center; font-size: 18px; line-height: 1;
+  }
+</style>
+</helmet>
+
+<div style="display: flex; min-height: 100vh; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body)">
+
+  <sc-if value="{{ ui.wide }}" hint-placeholder-val="{{ true }}">
+    <aside style="width: {{ ui.asideW }}; flex: 0 0 {{ ui.asideW }}; min-height: 100vh; position: sticky; top: 0; height: 100vh; box-sizing: border-box; padding: {{ ui.asidePad }}; background: var(--color-surface); display: flex; flex-direction: column; gap: 22px; overflow: hidden">
+      <sc-if value="{{ ui.navExpanded }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <img class="z-logo" src="/icon-vrchol.png" alt="Zenith">
+          <span style="font-family: var(--font-heading); font-size: 24px; letter-spacing: -0.02em; flex: 1 1 auto; min-width: 0">Zenith</span>
+          <button onClick="{{ ui.toggleNav }}" class="nav-toggle" aria-label="{{ ui.navToggleLabel }}">{{ ui.navToggleMark }}</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ ui.navCollapsed }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px">
+          <img class="z-logo" src="/icon-vrchol.png" alt="Zenith">
+          <button onClick="{{ ui.toggleNav }}" class="nav-toggle" aria-label="{{ ui.navToggleLabel }}">{{ ui.navToggleMark }}</button>
+        </div>
+      </sc-if>
+      <nav style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto">
+        <sc-for list="{{ nav }}" as="it" hint-placeholder-count="8">
+          <button onClick="{{ it.go }}" aria-label="{{ it.n }}" style="display: flex; align-items: center; justify-content: {{ ui.navJustify }}; gap: 12px; text-align: left; border: 0; cursor: pointer; padding: 11px 12px; border-radius: 16px; font-size: 15.5px; background: {{ it.bg }}; color: {{ it.fg }}" style-hover="background: {{ it.hoverBg }}; color: {{ it.hoverFg }}">
+            <i data-lucide="{{ it.lucide }}"></i>
+            <sc-if value="{{ ui.navExpanded }}" hint-placeholder-val="{{ true }}">
+              <span style="flex: 1 1 auto; min-width: 0">{{ it.n }}</span>
+              <span style="font-size: 12px; opacity: 0.6">{{ it.badge }}</span>
+            </sc-if>
+          </button>
+        </sc-for>
+      </nav>
+    </aside>
+  </sc-if>
+
+  <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+
+    <sc-if value="{{ ui.phone }}" hint-placeholder-val="{{ false }}">
+      <header style="position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--color-surface); border-bottom: 1px solid var(--color-divider)">
+        <button onClick="{{ ui.openDrawer }}" class="hb" aria-label="Otvoriť menu">
+          <span></span><span></span><span></span>
+        </button>
+        <img class="z-logo" src="/icon-vrchol.png" alt="Zenith">
+        <span style="font-family: var(--font-heading); font-size: 18px; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ ui.title }}</span>
+      </header>
+    </sc-if>
+
+    <sc-if value="{{ ui.drawer }}" hint-placeholder-val="{{ false }}">
+      <div style="position: fixed; inset: 0; z-index: 60; background: color-mix(in srgb, var(--color-neutral-900) 48%, transparent); animation: zfade 0.15s ease-out">
+        <div onClick="{{ ui.closeDrawer }}" style="position: absolute; inset: 0"></div>
+        <nav class="drawer-sheet">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <img class="z-logo-lg" src="/icon-vrchol.png" alt="Zenith">
+            <span style="font-family: var(--font-heading); font-size: 26px; flex: 1 1 auto">Zenith</span>
+            <button onClick="{{ ui.closeDrawer }}" class="drawer-close" aria-label="Zatvoriť">×</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <sc-for list="{{ nav }}" as="it" hint-placeholder-count="8">
+              <button onClick="{{ it.go }}" style="display: flex; align-items: center; gap: 14px; text-align: left; border: 0; cursor: pointer; padding: 14px 16px; border-radius: 16px; font-size: 16.5px; min-height: 54px; background: {{ it.bg }}; color: {{ it.fg }}">
+                <i data-lucide="{{ it.lucide }}"></i>
+                <span style="flex: 1 1 auto">{{ it.n }}</span>
+                <span style="font-size: 12px; opacity: 0.6">{{ it.badge }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </nav>
+      </div>
+    </sc-if>
+
+    <main style="flex: 1 1 auto; box-sizing: border-box; width: 100%; max-width: none; padding: 28px clamp(16px, 3vw, 36px) 80px">
+
+      <sc-if value="{{ v.home }}" hint-placeholder-val="{{ true }}">
+        <section>
+          <p style="font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent); margin: 0 0 8px">{{ home.date }}</p>
+          <h1 style="font-size: clamp(34px, 9vw, 50px); margin: 0 0 10px">Domov</h1>
+          <p style="max-width: 100%; font-size: 16px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 26px; width: 100%">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px">
+            <sc-for list="{{ home.tiles }}" as="t" hint-placeholder-count="7">
+              <button onClick="{{ t.go }}" style="text-align: left; cursor: pointer; border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: 12px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 7px; min-height: 128px" style-hover="border-color: var(--color-accent-400); background: var(--color-accent-100)">
+                <span style="width: 26px; height: 26px; border-radius: 999px; background: {{ t.dot }}"></span>
+                <span style="font-family: var(--font-heading); font-size: 21px; line-height: 1.1">{{ t.n }}</span>
+                <span style="font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 60%, transparent); text-wrap: pretty">{{ t.sub }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ v.journal }}" hint-placeholder-val="{{ false }}">
+        <section>
+          <h1 style="font-size: clamp(30px, 8vw, 44px); margin: 0 0 8px">{{ j.title }}</h1>
+          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 6px; text-wrap: pretty; width: 100%">{{ j.lead }}</p>
+          <p style="font-size: 13px; color: var(--color-accent-700); margin: 0 0 20px">{{ j.counter }}</p>
+
+          <div style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px">
+            <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ j.formLabel }}</span>
+            <textarea onInput="{{ j.setText }}" value="{{ j.text }}" placeholder="{{ j.ph }}" rows="3" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: var(--radius-md); border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)" style-focus="outline: 2px solid var(--color-accent); outline-offset: 1px; border-color: var(--color-accent-400)"></textarea>
+            <div style="display: flex; flex-direction: column; gap: 7px">
+              <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Oblasť života</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 7px">
+                <sc-for list="{{ j.areaChips }}" as="a" hint-placeholder-count="7">
+                  <button onClick="{{ a.pick }}" style="cursor: pointer; border-radius: 999px; padding: 9px 14px; font-size: 14px; min-height: 40px; border: 1px solid {{ a.bd }}; background: {{ a.bg }}; color: {{ a.fg }}">{{ a.name }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ j.hasTier }}" hint-placeholder-val="{{ false }}">
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 14.5px; cursor: pointer; min-height: 44px">
+                <input type="checkbox" checked="{{ j.tier }}" onChange="{{ j.toggleTier }}" style="width: 20px; height: 20px; accent-color: var(--color-accent)">
+                <span>Označiť ako <strong>S-tier</strong>, na toto som naozaj hrdý</span>
+              </label>
+            </sc-if>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+              <button onClick="{{ j.save }}" class="btn btn-primary" style="border-radius: 999px; min-height: 46px; padding-inline: 22px; font-size: 15px">{{ j.saveLabel }}</button>
+              <sc-if value="{{ j.editing }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ j.cancel }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 46px">Zrušiť úpravu</button>
+              </sc-if>
+              <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 50%, transparent)">{{ j.hint }}</span>
+            </div>
+          </div>
+
+          <h2 style="font-size: 22px; margin: 30px 0 12px">Dnes</h2>
+          <sc-if value="{{ j.todayEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="border: 1px dashed var(--color-neutral-400); border-radius: var(--radius-lg); padding: 26px 20px; text-align: left">
+              <p style="margin: 0; font-size: 15px; color: color-mix(in srgb, var(--color-text) 62%, transparent); max-width: 42ch; text-wrap: pretty">{{ j.emptyToday }}</p>
+            </div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 9px">
+            <sc-for list="{{ j.today }}" as="e" hint-placeholder-count="2">
+              <article style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-md); padding: 14px 15px; display: flex; flex-direction: column; gap: 9px">
+                <p style="margin: 0; font-size: 16px; line-height: 1.5; text-wrap: pretty">{{ e.text }}</p>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+                  <span style="font-size: 12px; padding: 4px 11px; border-radius: 999px; background: {{ e.tint }}; color: {{ e.ink }}">{{ e.areaName }}</span>
+                  <sc-if value="{{ e.tier }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size: 12px; padding: 4px 11px; border-radius: 999px; background: var(--color-accent); color: var(--color-bg)">S-tier</span>
+                  </sc-if>
+                  <span style="margin-left: auto; display: flex; gap: 2px">
+                    <button onClick="{{ e.edit }}" class="btn btn-ghost" style="font-size: 13px; min-height: 40px">Upraviť</button>
+                    <button onClick="{{ e.del }}" class="btn btn-ghost" style="font-size: 13px; min-height: 40px; color: var(--color-neutral-700)">Zmazať</button>
+                  </span>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+
+          <h2 style="font-size: 22px; margin: 30px 0 6px">Staršie</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px">
+            <sc-for list="{{ j.filters }}" as="f" hint-placeholder-count="8">
+              <button onClick="{{ f.pick }}" style="cursor: pointer; border-radius: 999px; padding: 8px 13px; font-size: 13.5px; min-height: 38px; border: 1px solid {{ f.bd }}; background: {{ f.bg }}; color: {{ f.fg }}">{{ f.name }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ j.pastEmpty }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent); margin: 0">Tu sa bude zbierať história. Zatiaľ prázdna.</p>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <sc-for list="{{ j.past }}" as="g" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 7px">
+                <span style="font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">{{ g.label }}</span>
+                <sc-for list="{{ g.items }}" as="e" hint-placeholder-count="2">
+                  <article style="border-left: 3px solid {{ e.dot }}; padding: 4px 0 4px 13px; display: flex; flex-direction: column; gap: 4px">
+                    <p style="margin: 0; font-size: 15.5px; line-height: 1.5; text-wrap: pretty">{{ e.text }}</p>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+                      <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ e.areaName }}{{ e.tierMark }}</span>
+                      <span style="display: flex; gap: 2px">
+                        <button onClick="{{ e.edit }}" class="btn btn-ghost" style="font-size: 12.5px; min-height: 36px">Upraviť</button>
+                        <button onClick="{{ e.del }}" class="btn btn-ghost" style="font-size: 12.5px; min-height: 36px; color: var(--color-neutral-700)">Zmazať</button>
+                      </span>
+                    </div>
+                  </article>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ v.ideas }}" hint-placeholder-val="{{ false }}">
+        <section>
+          <h1 style="font-size: clamp(30px, 8vw, 44px); margin: 0 0 8px">Nápady</h1>
+          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 22px; text-wrap: pretty; width: 100%">Nápad má dva východy: zrušiť ho, alebo z neho urobiť jednu 60-dňovú výzvu. Zrušiť je v poriadku a je to rýchlejšie.</p>
+
+          <sc-if value="{{ ideas.hasActive }}" hint-placeholder-val="{{ true }}">
+            <div style="border: 1px solid var(--color-accent-300); background: var(--color-accent-100); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 22px; display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap">
+                <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-700)">Aktívna výzva</span>
+                <span style="margin-left: auto; font-family: var(--font-heading); font-size: 15px; color: var(--color-accent-700)">{{ ideas.active.dayLabel }}</span>
+              </div>
+              <h2 style="font-size: 25px; margin: 0">{{ ideas.active.text }}</h2>
+              <div style="height: 10px; border-radius: 999px; background: var(--color-accent-200); overflow: hidden">
+                <div style="height: 100%; border-radius: 999px; background: var(--color-accent); width: {{ ideas.active.pct }}"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 7px">
+                <span style="font-size: 12.5px; color: var(--color-accent-800)">Dnešné aktivity, bez debaty</span>
+                <sc-for list="{{ ideas.active.acts }}" as="a" hint-placeholder-count="4">
+                  <label style="display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer; background: var(--color-bg); border: 1px solid var(--color-accent-200); border-radius: var(--radius-md); padding: 8px 14px; font-size: 15.5px">
+                    <input type="checkbox" checked="{{ a.done }}" onChange="{{ a.toggle }}" style="width: 22px; height: 22px; accent-color: var(--color-accent)">
+                    <span style="text-decoration: {{ a.deco }}; opacity: {{ a.op }}">{{ a.name }}</span>
+                  </label>
+                </sc-for>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+                <button onClick="{{ ideas.active.complete }}" class="btn btn-primary" style="border-radius: 999px; min-height: 46px; padding-inline: 20px">Označiť ako Hotovo</button>
+                <button onClick="{{ ideas.active.abandon }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 46px">Ukončiť a zrušiť</button>
+                <span style="font-size: 12.5px; color: var(--color-accent-800)">{{ ideas.active.doneLabel }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px">
+            <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Nový nápad</span>
+            <textarea onInput="{{ ideas.setText }}" value="{{ ideas.text }}" placeholder="Čo ti vrtá v hlave?" rows="2" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: var(--radius-md); border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)" style-focus="outline: 2px solid var(--color-accent); outline-offset: 1px"></textarea>
+            <div style="display: flex; flex-wrap: wrap; gap: 7px">
+              <sc-for list="{{ ideas.areaChips }}" as="a" hint-placeholder-count="7">
+                <button onClick="{{ a.pick }}" style="cursor: pointer; border-radius: 999px; padding: 9px 14px; font-size: 14px; min-height: 40px; border: 1px solid {{ a.bd }}; background: {{ a.bg }}; color: {{ a.fg }}">{{ a.name }}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+              <button onClick="{{ ideas.add }}" class="btn btn-primary" style="border-radius: 999px; min-height: 46px; padding-inline: 22px">Pridať do Nových</button>
+              <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Vzniká vždy v stave Nový.</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 7px; margin: 22px 0 14px">
+            <sc-for list="{{ ideas.tabs }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.pick }}" style="cursor: pointer; border-radius: 999px; padding: 10px 15px; font-size: 14px; min-height: 42px; border: 1px solid {{ t.bd }}; background: {{ t.bg }}; color: {{ t.fg }}">{{ t.name }} <span style="opacity: 0.6">{{ t.count }}</span></button>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; grid-template-columns: {{ ideas.cols }}; gap: 14px; align-items: start">
+            <sc-for list="{{ ideas.columns }}" as="c" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 9px; min-width: 0">
+                <div style="display: flex; align-items: baseline; gap: 8px">
+                  <h2 style="font-size: 18px; margin: 0">{{ c.name }}</h2>
+                  <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 50%, transparent)">{{ c.count }}</span>
+                </div>
+                <p style="margin: 0; font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent); text-wrap: pretty">{{ c.note }}</p>
+                <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}">
+                  <div style="border: 1px dashed var(--color-neutral-400); border-radius: var(--radius-md); padding: 16px; font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ c.emptyText }}</div>
+                </sc-if>
+                <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="2">
+                  <article style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-md); padding: 13px 14px; display: flex; flex-direction: column; gap: 10px; opacity: {{ k.op }}">
+                    <p style="margin: 0; font-size: 15.5px; line-height: 1.45; text-wrap: pretty; text-decoration: {{ k.deco }}">{{ k.text }}</p>
+                    <span style="align-self: flex-start; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: {{ k.tint }}; color: {{ k.ink }}">{{ k.areaName }}</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                      <sc-for list="{{ k.actions }}" as="ac" hint-placeholder-count="2">
+                        <button onClick="{{ ac.run }}" style="cursor: pointer; border-radius: 999px; min-height: 40px; padding: 8px 14px; font-size: 13.5px; border: 1px solid {{ ac.bd }}; background: {{ ac.bg }}; color: {{ ac.fg }}">{{ ac.label }}</button>
+                      </sc-for>
+                    </div>
+                  </article>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ v.manifest }}" hint-placeholder-val="{{ false }}">
+        <section>
+          <h1 style="font-size: clamp(30px, 8vw, 44px); margin: 0 0 8px">Manifestácia</h1>
+          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 22px; text-wrap: pretty; width: 100%">Jeden scenár. Nie zoznam želaní. Prečítaj si ho denne a vydrž pri ňom 2–3 minúty.</p>
+
+          <sc-if value="{{ man.reading }}" hint-placeholder-val="{{ true }}">
+            <article style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 22px 20px; display: flex; flex-direction: column; gap: 16px">
+              <sc-if value="{{ man.empty }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 12px">
+                  <h2 style="font-size: 23px; margin: 0">Scenár ešte nie je napísaný</h2>
+                  <p style="margin: 0; font-size: 15px; color: color-mix(in srgb, var(--color-text) 62%, transparent); max-width: 44ch; text-wrap: pretty">Napíš jeden ucelený text v prítomnom čase: ideálny deň, rodina, práca, aké to je. Surovinu máš vo Vďačnosti a v Úspechoch.</p>
+                  <button onClick="{{ man.edit }}" class="btn btn-primary" style="align-self: flex-start; border-radius: 999px; min-height: 46px; padding-inline: 22px">Napísať scenár</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ man.has }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; gap: 16px">
+                  <p style="margin: 0; font-size: 17.5px; line-height: 1.72; white-space: pre-wrap; text-wrap: pretty">{{ man.text }}</p>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+                    <button onClick="{{ man.start }}" class="btn btn-primary" style="border-radius: 999px; min-height: 48px; padding-inline: 22px; font-size: 15px">Začať vizualizáciu · {{ man.mins }}</button>
+                    <button onClick="{{ man.edit }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 48px">Upraviť scenár</button>
+                    <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 50%, transparent)">{{ man.lastLabel }}</span>
+                  </div>
+                </div>
+              </sc-if>
+            </article>
+            <h2 style="font-size: 20px; margin: 28px 0 10px">Surovina z posledných dní</h2>
+            <p style="margin: 0 0 12px; font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Ťuknutím pripojíš vetu na konec scenára.</p>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <sc-for list="{{ man.sources }}" as="s" hint-placeholder-count="3">
+                <button onClick="{{ s.insert }}" style="text-align: left; cursor: pointer; border: 1px solid var(--color-divider); background: transparent; border-radius: var(--radius-md); padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; min-height: 46px" style-hover="background: var(--color-accent-100); border-color: var(--color-accent-300)">
+                  <span style="font-size: 11.5px; padding: 3px 9px; border-radius: 999px; background: {{ s.tint }}; color: {{ s.ink }}; white-space: nowrap">{{ s.kind }}</span>
+                  <span style="font-size: 14.5px; line-height: 1.45">{{ s.text }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ man.editing }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <textarea onInput="{{ man.setText }}" value="{{ man.draft }}" placeholder="Je ráno, vstávam bez budíka…" rows="14" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16.5px; line-height: 1.7; padding: 16px 18px; border-radius: var(--radius-lg); border: 1px solid var(--color-neutral-300); background: var(--color-neutral-100); color: var(--color-text)" style-focus="outline: 2px solid var(--color-accent); outline-offset: 1px"></textarea>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button onClick="{{ man.save }}" class="btn btn-primary" style="border-radius: 999px; min-height: 48px; padding-inline: 22px">Uložiť scenár</button>
+                <button onClick="{{ man.cancelEdit }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 48px">Zrušiť</button>
+              </div>
+            </div>
+          </sc-if>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ v.anchor }}" hint-placeholder-val="{{ false }}">
+        <section>
+          <h1 style="font-size: clamp(30px, 8vw, 44px); margin: 0 0 8px">Kotva</h1>
+          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 22px; text-wrap: pretty; width: 100%">Jeden prerušovač reaktivity denne. Nie sada alarmov.</p>
+
+          <article style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 22px 20px; display: flex; flex-direction: column; gap: 18px">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap">
+              <span style="font-family: var(--font-heading); font-size: clamp(44px, 12vw, 64px); line-height: 1; color: var(--color-accent-700)">{{ anchor.time }}</span>
+              <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ anchor.status }}</span>
+            </div>
+            <p style="margin: 0; font-size: clamp(19px, 5vw, 25px); line-height: 1.45; font-family: var(--font-heading); text-wrap: pretty">„{{ anchor.question }}“</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+              <sc-if value="{{ anchor.notRead }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ anchor.markRead }}" class="btn btn-primary" style="border-radius: 999px; min-height: 50px; padding-inline: 24px; font-size: 15.5px">Prečítal som si to</button>
+              </sc-if>
+              <sc-if value="{{ anchor.read }}" hint-placeholder-val="{{ false }}">
+                <span style="display: inline-flex; align-items: center; gap: 9px; border-radius: 999px; padding: 12px 20px; background: var(--color-accent-2-200); color: var(--color-accent-2-800); font-size: 15px">Dnes odklinuté · {{ anchor.readAt }}</span>
+              </sc-if>
+              <button onClick="{{ anchor.toggleEdit }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 50px">{{ anchor.editLabel }}</button>
+            </div>
+          </article>
+
+          <sc-if value="{{ anchor.editing }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 16px; border: 1px solid var(--color-divider); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px">
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Čas
+                <input type="time" value="{{ anchor.time }}" onChange="{{ anchor.setTime }}" style="width: 160px; font-size: 16px; padding: 12px 14px; border-radius: 999px; border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)">
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Otázka
+                <textarea onInput="{{ anchor.setQuestion }}" value="{{ anchor.question }}" rows="3" style="width: 100%; box-sizing: border-box; font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: var(--radius-md); border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)"></textarea>
+              </label>
+              <p style="margin: 0; font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent); max-width: 46ch; text-wrap: pretty">{{ anchor.notifyNote }}</p>
+            </div>
+          </sc-if>
+
+          <h2 style="font-size: 20px; margin: 28px 0 10px">Posledných 7 dní</h2>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <sc-for list="{{ anchor.week }}" as="d" hint-placeholder-count="7">
+              <div style="width: 56px; border-radius: var(--radius-md); border: 1px solid {{ d.bd }}; background: {{ d.bg }}; color: {{ d.fg }}; padding: 10px 0; display: flex; flex-direction: column; align-items: center; gap: 3px">
+                <span style="font-size: 11px; opacity: 0.7">{{ d.dow }}</span>
+                <span style="font-family: var(--font-heading); font-size: 17px">{{ d.day }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ v.principles }}" hint-placeholder-val="{{ false }}">
+        <section>
+          <h1 style="font-size: clamp(30px, 8vw, 44px); margin: 0 0 8px">Princípy</h1>
+          <p style="font-size: 15.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent); margin: 0 0 22px; text-wrap: pretty; width: 100%">Vlož poznámky z jednej kapitoly. Zenith z nich urobí krátky výrok, krátky text a jednoduchý nákres, jednu kapitolu, nie celú knihu.</p>
+
+          <sc-if value="{{ pr.composing }}" hint-placeholder-val="{{ true }}">
+            <div style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px">
+              <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Poznámky z kapitoly</span>
+              <input value="{{ pr.source }}" onInput="{{ pr.setSource }}" placeholder="Kniha a kapitola, napr. Konec prokrastinace, kap. 3" style="width: 100%; box-sizing: border-box; font-size: 16px; padding: 12px 15px; border-radius: 999px; border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)">
+              <textarea onInput="{{ pr.setNotes }}" value="{{ pr.notes }}" placeholder="Nalep alebo napíš poznámky. Kľudne odrážky, kľudne neporiadok." rows="7" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.55; padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--color-neutral-300); background: var(--color-bg); color: var(--color-text)"></textarea>
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+                <button onClick="{{ pr.generate }}" class="btn btn-primary" style="border-radius: 999px; min-height: 48px; padding-inline: 22px">Vytvoriť princíp</button>
+                <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 50%, transparent)">{{ pr.hint }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pr.drafting }}" hint-placeholder-val="{{ false }}">
+            <div style="border: 1px solid var(--color-accent-300); background: var(--color-accent-100); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px">
+              <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-700)">Návrh princípu, uprav, ak treba</span>
+              <input value="{{ pr.draft.title }}" onInput="{{ pr.setTitle }}" style="width: 100%; box-sizing: border-box; font-family: var(--font-heading); font-size: 20px; padding: 13px 16px; border-radius: var(--radius-md); border: 1px solid var(--color-accent-300); background: var(--color-bg); color: var(--color-text)">
+              <textarea onInput="{{ pr.setBody }}" value="{{ pr.draft.body }}" rows="4" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 16px; line-height: 1.55; padding: 13px 16px; border-radius: var(--radius-md); border: 1px solid var(--color-accent-300); background: var(--color-bg); color: var(--color-text)"></textarea>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <span style="font-size: 12.5px; color: var(--color-accent-800)">Nákres</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 7px">
+                  <sc-for list="{{ pr.sketchOptions }}" as="s" hint-placeholder-count="3">
+                    <button onClick="{{ s.pick }}" style="cursor: pointer; border-radius: 999px; padding: 9px 14px; font-size: 13.5px; min-height: 42px; border: 1px solid {{ s.bd }}; background: {{ s.bg }}; color: {{ s.fg }}">{{ s.name }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="background: var(--color-bg); border: 1px solid var(--color-accent-200); border-radius: var(--radius-md); padding: 14px">
+                <x-import component-from-global-scope="ZenithSketch" from="./zenith-sketch.js" kind="{{ pr.draft.sketch }}" labels="{{ pr.draft.labels }}" hint-size="100%,150px"></x-import>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button onClick="{{ pr.savePrinciple }}" class="btn btn-primary" style="border-radius: 999px; min-height: 48px; padding-inline: 22px">Uložiť princíp</button>
+                <button onClick="{{ pr.discard }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 48px">Zahodiť</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <h2 style="font-size: 20px; margin: 30px 0 12px">Moje princípy <span style="font-size: 14px; opacity: 0.55">{{ pr.count }}</span></h2>
+          <sc-if value="{{ pr.empty }}" hint-placeholder-val="{{ false }}">
+            <div style="border: 1px dashed var(--color-neutral-400); border-radius: var(--radius-lg); padding: 24px 20px">
+              <p style="margin: 0; font-size: 15px; color: color-mix(in srgb, var(--color-text) 62%, transparent); max-width: 44ch; text-wrap: pretty">Zatiaľ žiadny princíp. Prvý vznikne z poznámok jednej kapitoly, nemusí to byť celá kniha.</p>
+            </div>
+          </sc-if>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 14px">
+            <sc-for list="{{ pr.list }}" as="p" hint-placeholder-count="2">
+              <article style="border: 1px solid var(--color-divider); background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px">
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.2; text-wrap: pretty">{{ p.title }}</h3>
+                <div style="background: var(--color-bg); border-radius: var(--radius-md); padding: 10px">
+                  <x-import component-from-global-scope="ZenithSketch" from="./zenith-sketch.js" kind="{{ p.sketch }}" labels="{{ p.labels }}" hint-size="100%,130px"></x-import>
+                </div>
+                <p style="margin: 0; font-size: 15px; line-height: 1.55; text-wrap: pretty">{{ p.body }}</p>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: auto">
+                  <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ p.source }}</span>
+                  <button onClick="{{ p.del }}" class="btn btn-ghost" style="margin-left: auto; font-size: 12.5px; min-height: 38px; color: var(--color-neutral-700)">Zmazať</button>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <sc-if value="{{ man.viz }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 80; background: var(--color-accent-900); color: var(--color-neutral-100); display: flex; flex-direction: column; animation: zfade 0.25s ease-out">
+      <div style="flex: 0 0 auto; display: flex; align-items: center; gap: 14px; padding: 18px 20px">
+        <span style="font-family: var(--font-heading); font-size: 28px; color: var(--color-accent-300)">{{ man.clock }}</span>
+        <span style="font-size: 13px; opacity: 0.7">Zostáva. Len čítaj a drž pri tom pozornosť.</span>
+        <button onClick="{{ man.stop }}" style="margin-left: auto; cursor: pointer; border-radius: 999px; min-height: 46px; padding: 10px 18px; font-size: 14px; border: 1px solid color-mix(in srgb, var(--color-neutral-100) 40%, transparent); background: transparent; color: var(--color-neutral-100)">Ukončiť</button>
+      </div>
+      <div style="height: 4px; background: color-mix(in srgb, var(--color-neutral-100) 20%, transparent)">
+        <div style="height: 100%; background: var(--color-accent-300); width: {{ man.vizPct }}"></div>
+      </div>
+      <div style="flex: 1 1 auto; overflow-y: auto; padding: 30px 22px 60px; display: flex; justify-content: center">
+        <p style="margin: 0; max-width: 34ch; font-size: clamp(20px, 5.4vw, 27px); line-height: 1.75; white-space: pre-wrap; text-wrap: pretty">{{ man.text }}</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ chal.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 70; display: grid; place-items: end center; background: color-mix(in srgb, var(--color-neutral-900) 50%, transparent); animation: zfade 0.15s ease-out">
+      <div onClick="{{ chal.close }}" style="position: absolute; inset: 0"></div>
+      <div style="position: relative; width: min(100%, 560px); box-sizing: border-box; max-height: 92vh; overflow-y: auto; background: var(--color-bg); border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: 22px 20px 30px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 25px">60-dňová výzva</h2>
+        <p style="margin: 0; font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 65%, transparent); text-wrap: pretty">{{ chal.ideaText }}</p>
+        <sc-if value="{{ chal.blocked }}" hint-placeholder-val="{{ false }}">
+          <div style="border: 1px solid var(--color-accent-400); background: var(--color-accent-100); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 10px">
+            <p style="margin: 0; font-size: 15px; color: var(--color-accent-800); text-wrap: pretty">Naraz beží len jedna výzva. Teraz je aktívna: <strong>{{ chal.activeText }}</strong>. Buď ju dokonči, alebo ju ukonči, a potom začni túto.</p>
+            <button onClick="{{ chal.close }}" class="btn btn-secondary" style="align-self: flex-start; border-radius: 999px; min-height: 46px">Rozumiem</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ chal.allowed }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <p style="margin: 0; font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">3 až 5 jednoduchých denných aktivít. Žiadna debata, žiadne podmienky.</p>
+            <sc-for list="{{ chal.fields }}" as="f" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 9px">
+                <span style="width: 26px; height: 26px; flex: 0 0 26px; border-radius: 999px; background: var(--color-accent-200); color: var(--color-accent-800); display: grid; place-items: center; font-size: 13px">{{ f.no }}</span>
+                <input value="{{ f.value }}" onInput="{{ f.set }}" placeholder="{{ f.ph }}" style="flex: 1 1 auto; min-width: 0; font-size: 16px; padding: 12px 15px; border-radius: 999px; border: 1px solid var(--color-neutral-300); background: var(--color-neutral-100); color: var(--color-text)">
+                <button onClick="{{ f.remove }}" aria-label="Odobrať" style="width: 44px; height: 44px; flex: 0 0 44px; border: 0; background: transparent; cursor: pointer; font-size: 20px; color: var(--color-neutral-600); border-radius: 999px">×</button>
+              </div>
+            </sc-for>
+            <button onClick="{{ chal.addField }}" class="btn btn-ghost" style="align-self: flex-start; font-size: 14px; min-height: 42px" disabled="{{ chal.addDisabled }}">+ Pridať aktivitu</button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+              <button onClick="{{ chal.confirm }}" class="btn btn-primary" style="border-radius: 999px; min-height: 48px; padding-inline: 22px">Spustiť 60 dní</button>
+              <button onClick="{{ chal.close }}" class="btn btn-secondary" style="border-radius: 999px; min-height: 48px">Späť</button>
+              <span style="font-size: 12.5px; color: var(--color-accent-700)">{{ chal.error }}</span>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;vizSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:150,&quot;min&quot;:60,&quot;max&quot;:300,&quot;step&quot;:30,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Chovanie&quot;},&quot;oneChallenge&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Chovanie&quot;},&quot;anchorNotify&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Chovanie&quot;}}">
+class Component extends DCLogic {
+  static AREAS = [
+    { id: 'zdravie', name: 'Zdravie', c: 'var(--color-accent-2-500)', tint: 'var(--color-accent-2-200)', ink: 'var(--color-accent-2-800)' },
+    { id: 'rozvoj', name: 'Osobnostný rozvoj', c: 'var(--color-accent-500)', tint: 'var(--color-accent-200)', ink: 'var(--color-accent-800)' },
+    { id: 'praca', name: 'Práca a podnikanie', c: 'var(--color-neutral-700)', tint: 'var(--color-neutral-300)', ink: 'var(--color-neutral-900)' },
+    { id: 'financie', name: 'Financie', c: 'var(--color-accent-2-700)', tint: 'var(--color-accent-2-300)', ink: 'var(--color-accent-2-900)' },
+    { id: 'manzelstvo', name: 'Manželstvo a deti', c: 'var(--color-accent-700)', tint: 'var(--color-accent-300)', ink: 'var(--color-accent-900)' },
+    { id: 'rodina', name: 'Rodina', c: 'var(--color-accent-600)', tint: 'var(--color-accent-200)', ink: 'var(--color-accent-800)' },
+    { id: 'priatelia', name: 'Priatelia', c: 'var(--color-accent-2-600)', tint: 'var(--color-accent-2-200)', ink: 'var(--color-accent-2-800)' }
+  ];
+
+  static NAV = [
+    { r: 'home', n: 'Domov' },
+    { r: 'vdacnost', n: 'Vďačnosť' },
+    { r: 'uspechy', n: 'Úspechy' },
+    { r: 'napady', n: 'Nápady' },
+    { r: 'hnevaju', n: 'Veci, ktoré ma hnevajú' },
+    { r: 'manifestacia', n: 'Manifestácia' },
+    { r: 'kotva', n: 'Kotva' },
+    { r: 'principy', n: 'Princípy' }
+  ];
+
+  static ICONS = {
+    home: 'home',
+    vdacnost: 'heart',
+    uspechy: 'trophy',
+    napady: 'lightbulb',
+    hnevaju: 'flame',
+    manifestacia: 'sparkles',
+    kotva: 'anchor',
+    principy: 'book-open'
+  };
+
+  static pathFor(r) {
+    return r === 'home' ? '/' : '/' + r;
+  }
+  static routeFromPath(pathname) {
+    let p = pathname || '/';
+    try { p = decodeURIComponent(p); } catch (e) { /* keep p */ }
+    p = p.split('?')[0];
+    if (p.length > 1 && p.endsWith('/')) p = p.slice(0, -1);
+    if (p === '' || p === '/' || p === '/index.html') return 'home';
+    const key = p.replace(/^\//, '');
+    return Component.NAV.some(n => n.r === key) ? key : 'home';
+  }
+  static setDocTitle(r) {
+    if (typeof document === 'undefined') return;
+    const n = (Component.NAV.find(x => x.r === r) || {}).n;
+    document.title = r === 'home' ? 'Zenith' : ('Zenith: ' + n);
+  }
+
+  static TILES = {
+    vdacnost: 'Denne 1 až 5 vecí, zaradených do oblasti života.',
+    uspechy: 'Na čo si hrdý. S-tier pre to najsilnejšie.',
+    napady: 'Zrušiť, alebo z jedného urobiť 60-dňovú výzvu.',
+    hnevaju: 'Odkladisko mentálneho balastu. Nie to-do.',
+    manifestacia: 'Jeden scenár, denne 2–3 minúty pri ňom.',
+    kotva: 'Jedna otázka v presnom čase, každý deň.',
+    principy: 'Poznámky z kapitoly ako použiteľný princíp.'
+  };
+
+  static J = {
+    vdacnost: { key: 'vdacnost', title: 'Vďačnosť', lead: 'Každý deň 1 až 5 vecí. Jeden zápis patrí k jednej oblasti života.', ph: 'Za čo si dnes vďačný?', limit: 5, tier: false, empty: 'Dnes ešte nič. Stačí jedna vec, nemusí byť veľká.' },
+    uspechy: { key: 'uspechy', title: 'Úspechy', lead: 'Denník hrdosti na seba. Bez rebríčkov a bez porovnávania s kýmkoľvek.', ph: 'Čo sa ti podarilo?', limit: 0, tier: true, empty: 'Dnes ešte nič. Aj malý krok sa počíta ako úspech.' },
+    hnevaju: { key: 'hnevaju', title: 'Veci, ktoré ma hnevajú', lead: 'Miesto na to, čo ťa žerie. Vypíš to a nechaj byť, nič sa odtiaľ nemení na úlohu.', ph: 'Čo ťa dnes žerie?', limit: 0, tier: false, empty: 'Dnes nič. To je dobrá správa.' }
+  };
+
+  static STATES = [
+    { id: 'novy', name: 'Nový', note: 'Vzniká tu. Rozhodni sa rýchlo.', emptyText: 'Žiadne nové nápady.' },
+    { id: 'zruseny', name: 'Zrušený', note: 'Bola to len myšlienka. Riešiť ju nechceš.', emptyText: 'Nič zrušené.' },
+    { id: 'vyzva', name: '60-dňová výzva', note: 'Naraz len jedna. 3–5 denných aktivít.', emptyText: 'Žiadna výzva nebeží.' },
+    { id: 'hotovo', name: 'Hotovo', note: 'Odbehnuté. Zatvorené.', emptyText: 'Nič hotové.' }
+  ];
+
+  static SKETCHES = [
+    { id: 'buckets', name: 'Kyblíky' },
+    { id: 'stick', name: 'Palíčkové postavy' },
+    { id: 'board', name: 'Princíp na tabuli' }
+  ];
+
+  static seed() {
+    const d = (n) => { const t = new Date(); t.setDate(t.getDate() - n); return t.toISOString().slice(0, 10); };
+    return {
+      entries: {
+        vdacnost: [
+          { id: 'g1', text: 'Ráno bez telefónu prvú hodinu. Hlava bola tichá.', area: 'zdravie', date: d(0) },
+          { id: 'g2', text: 'Malá s nami zaspala bez plaču.', area: 'manzelstvo', date: d(0) },
+          { id: 'g3', text: 'Klient zaplatil skôr, než mal.', area: 'financie', date: d(1) },
+          { id: 'g4', text: 'Prechádzka s otcom po obede.', area: 'rodina', date: d(2) }
+        ],
+        uspechy: [
+          { id: 's1', text: 'Odmietol som projekt, ktorý som brať nemal.', area: 'praca', date: d(0), tier: true },
+          { id: 's2', text: 'Tri tréningy za týždeň, bez výnimky.', area: 'zdravie', date: d(1), tier: false },
+          { id: 's3', text: 'Dočítal som kapitolu a spísal poznámky.', area: 'rozvoj', date: d(3), tier: false }
+        ],
+        hnevaju: [
+          { id: 'h1', text: 'Zbytočné hovory, ktoré mohli byť dve vety v správe.', area: 'praca', date: d(0) },
+          { id: 'h2', text: 'Že sa porovnávam s ľuďmi, ktorých ani nepoznám.', area: 'rozvoj', date: d(2) }
+        ]
+      },
+      ideas: [
+        { id: 'i1', text: 'Naučiť sa variť päť jedál, ktoré zvládnem naslepo', area: 'zdravie', state: 'novy', created: d(1) },
+        { id: 'i2', text: 'Spustiť podcast o podnikaní', area: 'praca', state: 'zruseny', created: d(4) },
+        { id: 'i3', text: 'Kúpiť dron a filmovať víkendy', area: 'priatelia', state: 'zruseny', created: d(6) },
+        { id: 'i4', text: 'Ráno vstávať o 5:30 a mať dve hodiny na tvorbu', area: 'rozvoj', state: 'vyzva', created: d(12), start: d(11), acts: ['Vstať o 5:30', 'Hodina hlbokej práce', '20 minút čítania'], log: {} },
+        { id: 'i5', text: 'Vypnúť notifikácie na telefóne', area: 'zdravie', state: 'hotovo', created: d(40) }
+      ],
+      manifest: { text: 'Je ráno, vstávam pred rodinou a dom je ešte tichý. Nikam sa nenaháňam. Sadám si k práci, ktorú som si vybral, a robím ju bez toho, aby ma niekto naháňal, jednu vec, poriadne, do konca.\n\nNa obed sa zastavím. Viem, prečo to robím. Popoludní som s deťmi a nie som v telefóne. Manželka vie, že na mňa nemusí čakať s dôležitými vecami až do večera, lebo som prítomný priebežne.\n\nPeniaze sú v poriadku, lebo mám menej vecí a tie fungujú. Telo je v poriadku, lebo sa hýbem každý deň. Hlava je v poriadku, lebo neriešim desať výziev, jednu, šesťdesiat dní.', lastViewed: null, sessions: 0 },
+      anchor: { time: '12:30', question: 'Som to stále ja, alebo len ďalší, čo iba reaguje? Tvorím tú realitu, alebo na ňu iba reagujem?', read: [d(1), d(2), d(4)] },
+      principles: [
+        { id: 'p1', title: 'Kapacita nie je čas, je to pozornosť', body: 'Deň sa nedá natiahnuť, ale pozornosť sa dá presunúť. Jeden veľký kyblík na tvorbu, malý na reakcie. Keď sa poradie obráti, deň je plný a nič sa neposunulo.', sketch: 'buckets', labels: ['Tvorba', 'Reakcie', 'Zbytok'], source: 'Konec prokrastinace, kap. 3', date: d(5) },
+        { id: 'p2', title: 'Nápad nie je záväzok', body: 'Myšlienka smie skončiť tým, že ju zrušíš. Zrušiť je rozhodnutie, nie prehra, desať paralelných výziev je prehra.', sketch: 'board', labels: ['Nápad', 'Zrušiť', 'Jedna výzva'], source: 'Denník CEO, kap. 7', date: d(9) }
+      ]
+    };
+  }
+
+  state = (() => {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('zenith.v1') || 'null'); } catch (e) { saved = null; }
+    const data = saved || Component.seed();
+    return {
+      route: typeof location !== 'undefined' ? Component.routeFromPath(location.pathname) : 'home',
+      drawer: false, navExpanded: true, w: typeof window !== 'undefined' ? window.innerWidth : 1200,
+      entries: data.entries, ideas: data.ideas, manifest: data.manifest, anchor: data.anchor, principles: data.principles,
+      draftText: '', draftArea: 'zdravie', draftTier: false, editId: null,
+      filterArea: 'vsetky',
+      ideaText: '', ideaArea: 'praca', ideaTab: 'novy',
+      chalFor: null, chalFields: ['', '', ''], chalError: '',
+      manEdit: false, manDraft: '', viz: false, vizLeft: 0,
+      anchorEdit: false,
+      prNotes: '', prSource: '', prDraft: null
+    };
+  })();
+
+  componentDidMount() {
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    this._onPop = () => {
+      const r = Component.routeFromPath(location.pathname);
+      Component.setDocTitle(r);
+      this.setState({ route: r, drawer: false });
+    };
+    window.addEventListener('resize', this._onResize);
+    window.addEventListener('popstate', this._onPop);
+    Component.setDocTitle(this.state.route);
+    this.paintIcons();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('popstate', this._onPop);
+    if (this._timer) clearInterval(this._timer);
+  }
+  componentDidUpdate() { this.persist(); this.paintIcons(); }
+
+  paintIcons() {
+    const run = () => {
+      if (typeof lucide === 'undefined' || !lucide.createIcons) return;
+      lucide.createIcons({ attrs: { 'stroke-width': '2.75', width: '20', height: '20', class: 'nav-lucide' } });
+    };
+    run();
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(run);
+  }
+
+  persist() {
+    const s = this.state;
+    try {
+      localStorage.setItem('zenith.v1', JSON.stringify({
+        entries: s.entries, ideas: s.ideas, manifest: s.manifest, anchor: s.anchor, principles: s.principles
+      }));
+    } catch (e) { /* storage full or blocked, prototype keeps working in memory */ }
+  }
+
+  today() { return new Date().toISOString().slice(0, 10); }
+  area(id) { return Component.AREAS.find(a => a.id === id) || Component.AREAS[0]; }
+  fmt(iso) {
+    const t = new Date(iso + 'T00:00:00');
+    const days = ['nedeľa', 'pondelok', 'utorok', 'streda', 'štvrtok', 'piatok', 'sobota'];
+    return days[t.getDay()] + ' ' + t.getDate() + '. ' + (t.getMonth() + 1) + '.';
+  }
+  go(r) {
+    return () => {
+      const path = Component.pathFor(r);
+      if (typeof history !== 'undefined' && location.pathname !== path) {
+        history.pushState({ zenith: r }, '', path);
+      }
+      Component.setDocTitle(r);
+      this.setState({ route: r, drawer: false, draftText: '', editId: null, filterArea: 'vsetky' });
+    };
+  }
+
+  chip(active, a) {
+    return active
+      ? { bg: a ? a.tint : 'var(--color-accent-200)', fg: a ? a.ink : 'var(--color-accent-800)', bd: a ? a.c : 'var(--color-accent-600)' }
+      : { bg: 'transparent', fg: 'var(--color-text)', bd: 'var(--color-divider)' };
+  }
+
+  journalKey() { return Component.J[this.state.route] ? this.state.route : null; }
+
+  saveEntry() {
+    const k = this.journalKey(); if (!k) return;
+    const text = this.state.draftText.trim(); if (!text) return;
+    const cfg = Component.J[k];
+    this.setState(s => {
+      const list = s.entries[k].slice();
+      if (s.editId) {
+        const i = list.findIndex(e => e.id === s.editId);
+        if (i >= 0) list[i] = Object.assign({}, list[i], { text, area: s.draftArea, tier: cfg.tier ? s.draftTier : undefined });
+      } else {
+        if (cfg.limit) {
+          const todayCount = list.filter(e => e.date === this.today()).length;
+          if (todayCount >= cfg.limit) return {};
+        }
+        list.unshift({ id: 'e' + Date.now(), text, area: s.draftArea, date: this.today(), tier: cfg.tier ? s.draftTier : undefined });
+      }
+      return { entries: Object.assign({}, s.entries, { [k]: list }), draftText: '', draftTier: false, editId: null };
+    });
+  }
+
+  startChallenge(id) {
+    this.setState({ chalFor: id, chalFields: ['', '', ''], chalError: '' });
+  }
+  confirmChallenge() {
+    const acts = this.state.chalFields.map(f => f.trim()).filter(Boolean);
+    if (acts.length < 3) { this.setState({ chalError: 'Treba aspoň tri aktivity.' }); return; }
+    this.setState(s => ({
+      ideas: s.ideas.map(i => i.id === s.chalFor ? Object.assign({}, i, { state: 'vyzva', start: this.today(), acts, log: {} }) : i),
+      chalFor: null, ideaTab: 'vyzva'
+    }));
+  }
+  activeChallenge() { return this.state.ideas.find(i => i.state === 'vyzva') || null; }
+
+  startViz() {
+    const total = Math.round(this.props.vizSeconds ?? 150);
+    if (this._timer) clearInterval(this._timer);
+    this.setState({ viz: true, vizLeft: total });
+    this._timer = setInterval(() => {
+      this.setState(s => {
+        if (s.vizLeft <= 1) { clearInterval(this._timer); this._timer = null; return { vizLeft: 0, viz: false, manifest: Object.assign({}, s.manifest, { lastViewed: this.today(), sessions: (s.manifest.sessions || 0) + 1 }) }; }
+        return { vizLeft: s.vizLeft - 1 };
+      });
+    }, 1000);
+  }
+  stopViz() {
+    if (this._timer) { clearInterval(this._timer); this._timer = null; }
+    this.setState(s => ({ viz: false, manifest: Object.assign({}, s.manifest, { lastViewed: this.today(), sessions: (s.manifest.sessions || 0) + 1 }) }));
+  }
+
+  makePrinciple(notes) {
+    const clean = notes.replace(/^[\s\-•*\d.)]+/gm, '').replace(/\s+/g, ' ').trim();
+    const parts = clean.split(/(?<=[.!?])\s+|\s*[;–—]\s*/).map(s => s.trim()).filter(s => s.split(' ').length >= 3);
+    const pool = parts.length ? parts : [clean];
+    let title = pool.slice(0, 3).sort((a, b) => a.length - b.length)[0] || clean;
+    title = title.replace(/[.,;:]+$/, '');
+    if (title.length > 62) title = title.slice(0, 59).replace(/\s\S*$/, '') + '…';
+    const rest = pool.filter(p => p !== pool.slice(0, 3).sort((a, b) => a.length - b.length)[0]);
+    let body = rest.slice(0, 3).map(p => p.replace(/[.!?…]+$/, '')).join('. ');
+    if (!body) body = clean;
+    if (body.length > 240) body = body.slice(0, 237).replace(/\s\S*$/, '') + '…';
+    if (!/[.!?…]$/.test(body)) body += '.';
+    const low = clean.toLowerCase();
+    let sketch = 'buckets';
+    if (/(človek|ľud|vzťah|rodin|partner|dieť|klient|tím)/.test(low)) sketch = 'stick';
+    else if (/(čas|deň|hodin|prokrastin|rozhod|krok|proces|pravidl)/.test(low)) sketch = 'board';
+    const stop = ['ktorý', 'ktorá', 'ktoré', 'preto', 'lebo', 'potom', 'stále', 'vždy', 'nikdy', 'takže', 'možno'];
+    const words = Array.from(new Set(clean.toLowerCase().replace(/[^a-záäčďéíĺľňóôŕšťúýž\s]/g, ' ').split(/\s+/)
+      .filter(w => w.length > 4 && stop.indexOf(w) < 0)));
+    const labels = words.slice(0, 3).map(w => w.charAt(0).toUpperCase() + w.slice(1));
+    while (labels.length < 3) labels.push(['Vstup', 'Postup', 'Výsledok'][labels.length]);
+    return { title: title.charAt(0).toUpperCase() + title.slice(1), body, sketch, labels };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const wide = s.w >= 900;
+    const AREAS = Component.AREAS;
+    const today = this.today();
+    const counts = {
+      vdacnost: s.entries.vdacnost.filter(e => e.date === today).length,
+      uspechy: s.entries.uspechy.length,
+      napady: s.ideas.filter(i => i.state === 'novy').length,
+      hnevaju: s.entries.hnevaju.length,
+      principy: s.principles.length,
+      kotva: s.anchor.read.indexOf(today) >= 0 ? '✓' : ''
+    };
+
+    const nav = Component.NAV.map(it => {
+      const active = s.route === it.r;
+      return {
+        n: it.n, go: this.go(it.r), lucide: Component.ICONS[it.r],
+        bg: active ? 'var(--color-accent)' : 'transparent',
+        fg: active ? 'var(--color-bg)' : 'var(--color-text)',
+        hoverBg: active ? 'var(--color-accent-600)' : 'color-mix(in srgb, var(--color-text) 7%, transparent)',
+        hoverFg: active ? 'var(--color-bg)' : 'var(--color-text)',
+        badge: it.r === 'kotva' ? counts.kotva : (counts[it.r] ? String(counts[it.r]) : '')
+      };
+    });
+
+    const jk = this.journalKey();
+    const cfg = jk ? Component.J[jk] : null;
+    let j = {};
+    if (cfg) {
+      const list = s.entries[jk];
+      const todays = list.filter(e => e.date === today);
+      const past = list.filter(e => e.date !== today)
+        .filter(e => s.filterArea === 'vsetky' || e.area === s.filterArea);
+      const groups = [];
+      past.forEach(e => {
+        const g = groups.find(x => x.date === e.date);
+        const row = {
+          text: e.text, areaName: this.area(e.area).name, dot: this.area(e.area).c,
+          tierMark: e.tier ? ' · S-tier' : '',
+          edit: () => this.setState({ draftText: e.text, draftArea: e.area, draftTier: !!e.tier, editId: e.id }),
+          del: () => this.setState(st => ({ entries: Object.assign({}, st.entries, { [jk]: st.entries[jk].filter(x => x.id !== e.id) }) }))
+        };
+        if (g) g.items.push(row); else groups.push({ date: e.date, label: this.fmt(e.date), items: [row] });
+      });
+      const full = cfg.limit && todays.length >= cfg.limit && !s.editId;
+      j = {
+        title: cfg.title, lead: cfg.lead, ph: cfg.ph, hasTier: cfg.tier, tier: s.draftTier,
+        counter: cfg.limit ? 'Dnes ' + todays.length + ' z ' + cfg.limit : (jk === 'uspechy' ? s.entries.uspechy.filter(e => e.tier).length + ' × S-tier celkovo' : list.length + ' zápisov celkovo'),
+        formLabel: s.editId ? 'Upravuješ zápis' : 'Nový zápis',
+        saveLabel: s.editId ? 'Uložiť zmenu' : 'Pridať zápis',
+        hint: full ? 'Päť na dnes je maximum. Zvyšok si nechaj na zajtra.' : (s.editId ? '' : 'Jeden zápis, jedna oblasť.'),
+        editing: !!s.editId, text: s.draftText,
+        setText: (e) => this.setState({ draftText: e.target.value }),
+        toggleTier: (e) => this.setState({ draftTier: e.target.checked }),
+        save: () => this.saveEntry(),
+        cancel: () => this.setState({ editId: null, draftText: '', draftTier: false }),
+        areaChips: AREAS.map(a => Object.assign({ name: a.name, pick: () => this.setState({ draftArea: a.id }) }, this.chip(s.draftArea === a.id, a))),
+        filters: [{ id: 'vsetky', name: 'Všetky oblasti' }].concat(AREAS).map(a => Object.assign(
+          { name: a.name, pick: () => this.setState({ filterArea: a.id }) },
+          this.chip(s.filterArea === a.id, a.c ? a : null))),
+        today: todays.map(e => ({
+          text: e.text, areaName: this.area(e.area).name, tint: this.area(e.area).tint, ink: this.area(e.area).ink, tier: !!e.tier,
+          edit: () => this.setState({ draftText: e.text, draftArea: e.area, draftTier: !!e.tier, editId: e.id }),
+          del: () => this.setState(st => ({ entries: Object.assign({}, st.entries, { [jk]: st.entries[jk].filter(x => x.id !== e.id) }) }))
+        })),
+        todayEmpty: todays.length === 0, emptyToday: cfg.empty,
+        past: groups, pastEmpty: groups.length === 0
+      };
+    }
+
+    const active = this.activeChallenge();
+    const ideasByState = {};
+    Component.STATES.forEach(st => { ideasByState[st.id] = s.ideas.filter(i => i.state === st.id); });
+    const cardActions = (i) => {
+      const A = [];
+      const prim = { bd: 'var(--color-accent)', bg: 'var(--color-accent)', fg: 'var(--color-bg)' };
+      const sec = { bd: 'var(--color-divider)', bg: 'transparent', fg: 'var(--color-text)' };
+      const set = (st, extra) => () => this.setState(x => ({ ideas: x.ideas.map(y => y.id === i.id ? Object.assign({}, y, { state: st }, extra || {}) : y) }));
+      if (i.state === 'novy') {
+        A.push(Object.assign({ label: 'Zrušiť, bola to len myšlienka', run: set('zruseny') }, sec));
+        A.push(Object.assign({ label: 'Urobiť z toho výzvu', run: () => this.startChallenge(i.id) }, prim));
+      } else if (i.state === 'zruseny') {
+        A.push(Object.assign({ label: 'Vrátiť medzi Nové', run: set('novy') }, sec));
+        A.push(Object.assign({ label: 'Zmazať', run: () => this.setState(x => ({ ideas: x.ideas.filter(y => y.id !== i.id) })) }, sec));
+      } else if (i.state === 'vyzva') {
+        A.push(Object.assign({ label: 'Hotovo', run: set('hotovo') }, prim));
+      } else {
+        A.push(Object.assign({ label: 'Zmazať', run: () => this.setState(x => ({ ideas: x.ideas.filter(y => y.id !== i.id) })) }, sec));
+      }
+      return A;
+    };
+    const card = (i) => ({
+      text: i.text, areaName: this.area(i.area).name, tint: this.area(i.area).tint, ink: this.area(i.area).ink,
+      op: i.state === 'zruseny' ? '0.6' : '1', deco: i.state === 'zruseny' ? 'line-through' : 'none',
+      actions: cardActions(i)
+    });
+    const dayNo = active && active.start ? Math.min(60, Math.floor((new Date(today) - new Date(active.start)) / 86400000) + 1) : 0;
+    const todayLog = active && active.log ? (active.log[today] || []) : [];
+    const ideas = {
+      text: s.ideaText, setText: (e) => this.setState({ ideaText: e.target.value }),
+      areaChips: AREAS.map(a => Object.assign({ name: a.name, pick: () => this.setState({ ideaArea: a.id }) }, this.chip(s.ideaArea === a.id, a))),
+      add: () => { const t = s.ideaText.trim(); if (!t) return; this.setState(x => ({ ideas: [{ id: 'i' + Date.now(), text: t, area: x.ideaArea, state: 'novy', created: today }].concat(x.ideas), ideaText: '', ideaTab: 'novy' })); },
+      cols: '1fr',
+      tabs: Component.STATES.map(st => Object.assign({ name: st.name, count: ideasByState[st.id].length, pick: () => this.setState({ ideaTab: st.id }) }, this.chip(s.ideaTab === st.id, null))),
+      columns: Component.STATES.filter(st => st.id === s.ideaTab).map(st => ({
+        name: st.name, note: st.note, count: ideasByState[st.id].length,
+        empty: ideasByState[st.id].length === 0, emptyText: st.emptyText,
+        cards: ideasByState[st.id].map(card)
+      })),
+      hasActive: !!active,
+      active: active ? {
+        text: active.text, dayLabel: 'Deň ' + dayNo + ' z 60', pct: Math.round(dayNo / 60 * 100) + '%',
+        doneLabel: todayLog.length + ' z ' + active.acts.length + ' dnes',
+        acts: active.acts.map((name, idx) => ({
+          name, done: todayLog.indexOf(idx) >= 0,
+          deco: todayLog.indexOf(idx) >= 0 ? 'line-through' : 'none',
+          op: todayLog.indexOf(idx) >= 0 ? '0.55' : '1',
+          toggle: () => this.setState(x => ({
+            ideas: x.ideas.map(i => {
+              if (i.id !== active.id) return i;
+              const log = Object.assign({}, i.log || {});
+              const cur = (log[today] || []).slice();
+              const at = cur.indexOf(idx);
+              if (at >= 0) cur.splice(at, 1); else cur.push(idx);
+              log[today] = cur;
+              return Object.assign({}, i, { log });
+            })
+          }))
+        })),
+        complete: () => this.setState(x => ({ ideas: x.ideas.map(i => i.id === active.id ? Object.assign({}, i, { state: 'hotovo' }) : i) })),
+        abandon: () => this.setState(x => ({ ideas: x.ideas.map(i => i.id === active.id ? Object.assign({}, i, { state: 'zruseny' }) : i) }))
+      } : null
+    };
+
+    const limitOn = this.props.oneChallenge ?? true;
+    const chalIdea = s.chalFor ? s.ideas.find(i => i.id === s.chalFor) : null;
+    const blocked = !!(chalIdea && limitOn && active);
+    const chal = {
+      open: !!chalIdea, ideaText: chalIdea ? chalIdea.text : '',
+      blocked, allowed: !!chalIdea && !blocked,
+      activeText: active ? active.text : '',
+      close: () => this.setState({ chalFor: null, chalError: '' }),
+      fields: s.chalFields.map((v, idx) => ({
+        no: idx + 1, value: v, ph: ['Napr. Vstať o 5:30', 'Napr. 20 minút čítania', 'Napr. 10 minút ticha', 'Ďalšia aktivita', 'Ďalšia aktivita'][idx],
+        set: (e) => { const val = e.target.value; this.setState(x => { const f = x.chalFields.slice(); f[idx] = val; return { chalFields: f }; }); },
+        remove: () => this.setState(x => ({ chalFields: x.chalFields.length > 3 ? x.chalFields.filter((_, k) => k !== idx) : x.chalFields.map((y, k) => k === idx ? '' : y) }))
+      })),
+      addField: () => this.setState(x => ({ chalFields: x.chalFields.length < 5 ? x.chalFields.concat(['']) : x.chalFields })),
+      addDisabled: s.chalFields.length >= 5,
+      confirm: () => this.confirmChallenge(), error: s.chalError
+    };
+
+    const total = Math.round(this.props.vizSeconds ?? 150);
+    const srcItems = s.entries.vdacnost.slice(0, 2).map(e => ({ kind: 'Vďačnosť', e })).concat(s.entries.uspechy.slice(0, 2).map(e => ({ kind: 'Úspech', e })));
+    const man = {
+      reading: !s.manEdit, editing: s.manEdit,
+      has: !s.manEdit && !!(s.manifest.text || '').trim(), empty: !s.manEdit && !(s.manifest.text || '').trim(),
+      text: s.manifest.text, draft: s.manDraft,
+      mins: Math.round(total / 60) + ' min',
+      lastLabel: s.manifest.lastViewed === today ? 'Dnes hotové' : (s.manifest.lastViewed ? 'Naposledy ' + this.fmt(s.manifest.lastViewed) : 'Zatiaľ ani raz'),
+      edit: () => this.setState({ manEdit: true, manDraft: s.manifest.text }),
+      setText: (e) => this.setState({ manDraft: e.target.value }),
+      save: () => this.setState(x => ({ manEdit: false, manifest: Object.assign({}, x.manifest, { text: x.manDraft }) })),
+      cancelEdit: () => this.setState({ manEdit: false }),
+      start: () => this.startViz(), stop: () => this.stopViz(),
+      viz: s.viz, vizPct: Math.round((total - s.vizLeft) / total * 100) + '%',
+      clock: Math.floor(s.vizLeft / 60) + ':' + String(s.vizLeft % 60).padStart(2, '0'),
+      sources: srcItems.map(x => ({
+        kind: x.kind, text: x.e.text, tint: this.area(x.e.area).tint, ink: this.area(x.e.area).ink,
+        insert: () => this.setState(st => ({ manifest: Object.assign({}, st.manifest, { text: (st.manifest.text || '').replace(/\s*$/, '') + '\n\n' + x.e.text }) }))
+      }))
+    };
+
+    const readToday = s.anchor.read.indexOf(today) >= 0;
+    const week = [];
+    for (let k = 6; k >= 0; k--) {
+      const t = new Date(); t.setDate(t.getDate() - k);
+      const iso = t.toISOString().slice(0, 10);
+      const done = s.anchor.read.indexOf(iso) >= 0;
+      week.push({
+        dow: ['ne', 'po', 'ut', 'st', 'št', 'pi', 'so'][t.getDay()], day: t.getDate(),
+        bg: done ? 'var(--color-accent-2-300)' : 'transparent',
+        bd: done ? 'var(--color-accent-2-500)' : 'var(--color-divider)',
+        fg: done ? 'var(--color-accent-2-900)' : 'color-mix(in srgb, var(--color-text) 55%, transparent)'
+      });
+    }
+    const notify = this.props.anchorNotify ?? false;
+    const anchor = {
+      time: s.anchor.time, question: s.anchor.question,
+      status: readToday ? 'Dnes prečítané' : 'Dnes ešte neprečítané',
+      read: readToday, notRead: !readToday, readAt: s.anchor.time,
+      editing: s.anchorEdit, editLabel: s.anchorEdit ? 'Hotovo' : 'Nastaviť čas a otázku',
+      toggleEdit: () => this.setState(x => ({ anchorEdit: !x.anchorEdit })),
+      setTime: (e) => { const v = e.target.value; this.setState(x => ({ anchor: Object.assign({}, x.anchor, { time: v }) })); },
+      setQuestion: (e) => { const v = e.target.value; this.setState(x => ({ anchor: Object.assign({}, x.anchor, { question: v }) })); },
+      markRead: () => this.setState(x => ({ anchor: Object.assign({}, x.anchor, { read: x.anchor.read.concat([today]) }) })),
+      notifyNote: notify
+        ? 'Systémové upozornenie je zapnuté: raz denne v nastavenom čase. Stále platí jedna kotva, nie sada.'
+        : 'Systémové upozornenie je vypnuté. Kotva čaká tu, pripomienka príde až vtedy, keď si ju sám zapneš. Vždy len jedna denne.',
+      week
+    };
+
+    const pr = {
+      composing: !s.prDraft, drafting: !!s.prDraft,
+      notes: s.prNotes, source: s.prSource,
+      hint: s.prNotes.trim().length < 40 ? 'Pár viet stačí. Jedna kapitola, nie celá kniha.' : 'Pripravené.',
+      setNotes: (e) => this.setState({ prNotes: e.target.value }),
+      setSource: (e) => this.setState({ prSource: e.target.value }),
+      generate: () => { const n = s.prNotes.trim(); if (n.length < 10) return; this.setState({ prDraft: this.makePrinciple(n) }); },
+      draft: s.prDraft || { title: '', body: '', sketch: 'buckets', labels: [] },
+      setTitle: (e) => { const v = e.target.value; this.setState(x => ({ prDraft: Object.assign({}, x.prDraft, { title: v }) })); },
+      setBody: (e) => { const v = e.target.value; this.setState(x => ({ prDraft: Object.assign({}, x.prDraft, { body: v }) })); },
+      sketchOptions: Component.SKETCHES.map(k => Object.assign(
+        { name: k.name, pick: () => this.setState(x => ({ prDraft: Object.assign({}, x.prDraft, { sketch: k.id }) })) },
+        this.chip(!!s.prDraft && s.prDraft.sketch === k.id, null))),
+      savePrinciple: () => this.setState(x => ({
+        principles: [Object.assign({ id: 'p' + Date.now(), source: x.prSource || 'Bez zdroja', date: today }, x.prDraft)].concat(x.principles),
+        prDraft: null, prNotes: '', prSource: ''
+      })),
+      discard: () => this.setState({ prDraft: null }),
+      list: s.principles.map(p => ({
+        title: p.title, body: p.body, sketch: p.sketch, labels: p.labels, source: p.source,
+        del: () => this.setState(x => ({ principles: x.principles.filter(y => y.id !== p.id) }))
+      })),
+      count: s.principles.length, empty: s.principles.length === 0
+    };
+
+    return {
+      nav, j, ideas, chal, man, anchor, pr,
+      v: { home: s.route === 'home', journal: !!cfg, ideas: s.route === 'napady', manifest: s.route === 'manifestacia', anchor: s.route === 'kotva', principles: s.route === 'principy' },
+      ui: {
+        wide, phone: !wide, drawer: s.drawer,
+        navExpanded: s.navExpanded, navCollapsed: !s.navExpanded,
+        asideW: s.navExpanded ? '262px' : '88px',
+        asidePad: s.navExpanded ? '28px 18px' : '20px 10px',
+        navJustify: s.navExpanded ? 'flex-start' : 'center',
+        navToggleLabel: s.navExpanded ? 'Zbaliť menu' : 'Rozbaliť menu',
+        navToggleMark: s.navExpanded ? '‹' : '›',
+        title: (Component.NAV.find(n => n.r === s.route) || {}).n,
+        openDrawer: () => this.setState({ drawer: true }),
+        closeDrawer: () => this.setState({ drawer: false }),
+        toggleNav: () => this.setState(x => ({ navExpanded: !x.navExpanded }))
+      },
+      home: {
+        date: this.fmt(today),
+        tiles: Component.NAV.filter(n => n.r !== 'home').map(n => ({
+          n: n.n, sub: Component.TILES[n.r], go: this.go(n.r),
+          dot: this.area(['zdravie', 'rozvoj', 'praca', 'financie', 'manzelstvo', 'rodina', 'priatelia'][Component.NAV.indexOf(n) - 1]).c
+        }))
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

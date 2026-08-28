@@ -5,3 +5,6 @@
 *.p12
 .DS_Store
 .cursor/logs/*.log
+
+node_modules/
+.vite/

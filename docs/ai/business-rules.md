@@ -1,8 +1,6 @@
 # Business rules — Zenith
 
-**Posledné overenie:** 27. 8. 2026.
-
-Aplikačné výpočty, oprávnenia a stavové prechody **ešte neexistujú**. Nižšie sú pravidlá, ktoré už teraz platia pre vývoj, plus prázdne miesta pre budúce produktové pravidlá.
+**Posledné overenie:** 28. 8. 2026. Aplikačné pravidlá z `index.html` a `CLAUDE.md`.
 
 ## Kritické
 
@@ -30,14 +28,26 @@ Porušenie by mohlo zničiť dôveru, dáta alebo zmysel produktu.
 3. Overenie patrí do zadania (Validation Gate). Nevymýšľať druhý testovací framework; použiť stack zo schváleného zadania.
 4. Nové produktové pravidlá sem dopísať v kategórii kritické / dôležité / bežné, s odkazom na kód keď bude existovať.
 
-## Budúce aplikačné pravidlá
+## Aplikačné pravidlá (prototyp)
 
-Keď vznikne kód, sem doplniť (každé s odkazom na súbor):
+Zdroj: `index.html`, `CLAUDE.md`.
 
-- výpočty
-- oprávnenia
-- validácie
-- stavové prechody
-- dátové invarianty
-- bezpečnostné pravidlá aplikácie
-- záväzné UX pravidlá
+### Kritické (apka)
+
+1. **Žiadny em dash v UI.** V textoch rozhrania ani v obsahu, ktorý používateľ vidí, nikdy znak „—“. Čiarka, dvojbodka alebo nová veta. (`CLAUDE.md`)
+2. **Vďačnosť: max 5 zápisov za dnešný deň** (pri novom zápise, nie pri úprave). `Component.J.vdacnost.limit`.
+3. **Nápady:** z `novy` ide `zruseny` alebo `vyzva`. Z výzvy `hotovo`. Predvolene naraz **jedna** výzva (`oneChallenge` default true).
+4. **Výzva:** 3 až 5 denných aktivít. Kód hlási chybu pod 3. Maximum polí 5.
+5. **Wipe** maže `localStorage` `zenith.v1`. Bez tohto gesta nestrácať používateľské dáta.
+
+### Dôležité (apka)
+
+1. Displejový font s mäkčeňmi. Caprasimo zakázané. CLAUDE.md: Fredoka. Kód dnes: Nunito 900 (konflikt, kód platí kým sa neopraví).
+2. Lead na stránke na 100 % šírky obsahu.
+3. Kotva: predvolený čas 12:30, predvolená otázka ako v kóde. Systémový alarm default vypnutý.
+4. Princípy: nákres len `buckets` | `stick` | `board` cez `zenith-sketch.js`.
+
+### Bežné (apka)
+
+1. Inputy aspoň 16px (už v HTML).
+2. Hranica layoutu 900px.

@@ -1,51 +1,60 @@
 # Architektúra — Zenith
 
-**Stav:** Aplikačná architektúra neexistuje.  
-**Posledné overenie:** 27. 8. 2026. Zdroj: reálny obsah priečinka, nie predpoklad.
+**Stav:** Aplikácia je v **koreni** repo (nie v podpriečinku). AI development vrstva existuje.  
+**Posledné overenie:** 28. 8. 2026. Vlastník extrahoval prototyp z `Zenith-claude/` do hlavného priečinka Zenith. Priečinok `Zenith-claude/` už nie je.  
+**Režim:** C — je apka (aj AI systém).
 
-## Čo v projekte je
+Koreň **nemá** `src/`. Vstup je `index.html` (Claude Design). `package.json` existuje **len** kvôli Lucide; runtime apky ostáva HTML, nie Vite/React.
 
-Iba AI development infraštruktúra:
+## Čo je aplikácia
 
-- `docs/ai/` — knowledge base
-- `.cursor/` — rules, skills, commands
-- `AGENTS.md` — vstupný bod pre agentov
-- `README.md` — ľudský vstupný bod
-- git remote: `https://github.com/matus-babiak/zenith.git`
-
-Tieto súbory **nie sú** aplikácia. Nemenia sa nimi obrazovky, dáta ani business logika, lebo tie ešte nie sú.
-
-## Čo v projekte nie je (overené absenciou súborov)
-
-| Oblasť | Nález |
+| Súbor | Úloha |
 | --- | --- |
-| Package manager / závislosti | žiadny `package.json`, `pnpm-lock.yaml`, `yarn.lock`, `Cargo.toml`, `pyproject.toml`, `go.mod`, `Gemfile`, `composer.json` |
-| Framework | neznámy, nie je zvolený |
-| Frontend | žiadny `src/`, `app/`, `pages/`, UI kód |
-| Backend | žiadny server, API, handlers |
-| Databáza | žiadna schéma, migrácie, ORM |
-| Autentifikácia | neexistuje |
-| Routing | neexistuje |
-| State management | neexistuje |
-| Testy | žiadne testovacie súbory ani konfigurácia |
-| Deployment | žiadny Dockerfile, CI, hosting konfigurácia |
-| Git | remote je `https://github.com/matus-babiak/zenith.git` (v čase prvého auditu priečinok git ešte nemal) |
+| `index.html` | Jedna stránka: UI, routy, logika, persistencia |
+| `zenith-sketch.js` | SVG nákresy Princípov |
+| `support.js` | Runtime Claude Design (`DCLogic`) |
+| `icon-vrchol.png` | Znak v chrome (nočné čierne pozadie, Z + šípka) |
+| `vendor/lucide.min.js` | Čiarové ikony menu (Lucide UMD) |
+| `package.json` | Jediná npm závislosť: `lucide` (vendoruje sa do `vendor/`) |
+| `CLAUDE.md` | Záväzné pravidlá textu, písma a leadu |
+| `_ds/organic-eda8c3eb-c6eb-4bf8-95bd-88eeab88f6bf/` | Design systém, ktorý apka načíta |
+| `scripts/serve.py` | Lokálny server, SPA fallback na `index.html` |
+| `scripts/check-routes.py` | Overenie čistých ciest (HTTP 200) |
 
-## Vrstvy
+Nepoužité design systémy (modernist, classical) sa do koreňa nepreniesli.
 
-Rozdelenie UI / business logika / dáta **zatiaľ neexistuje**. Až vznikne kód, sem zapísať:
+Žiadny backend, žiadna databáza, žiadne API, žiadne prihlásenie, žiadny CI okrem tohto overovacieho skriptu.
 
-- kde je UI
-- kde sú pravidlá a výpočty
-- kde sú dátové operácie
-- ako časti komunikujú
-- hlavné entry pointy
-- ako sa aplikácia spúšťa, buildí a nasadzuje
+## Ako sa to správa
 
-## Obrazovka → komponenty → logika → dáta → testy
+- Obrazovka je `state.route` napojená na URL cez `history.pushState` / `popstate`. Cesty: `/`, `/vdacnost`, `/uspechy`, `/napady`, `/hnevaju`, `/manifestacia`, `/kotva`, `/principy`.
+- Hranica široká / telefón: `window.innerWidth >= 900`.
+- Dáta: `localStorage` kľúč `zenith.v1` (routa sa tam neukladá).
+- Po každom `componentDidUpdate` sa persistuje obsah denníkov, nie URL.
 
-Neaplikovateľné. Žiadne obrazovky.
+## Čo je AI vrstva (nie obrazovky)
 
-## Pravidlo pre agentov
+- `docs/ai/`
+- `.cursor/rules|skills|commands`
+- koreňový `AGENTS.md` → `docs/ai/AGENTS.md`
+- `README.md`
+- git: [github.com/matus-babiak/zenith](https://github.com/matus-babiak/zenith.git)
 
-Nestavaj architektúru „ako sa to zvyčajne robí“. Stack, štruktúra priečinkov a spôsob spustenia sa smú objaviť v kóde až po schválenom implementačnom zadaní, ktoré ich výslovne obsahuje. Kým vlastník stack nezvolí, je **neznámy**.
+## Ako sa spúšťa (dnes)
+
+Z koreňa: `python3 scripts/serve.py` (predvolený port 4173) a otvoriť `http://127.0.0.1:4173/`. Čisté cesty ako `/uspechy` vráti `index.html`. Holý `python3 -m http.server` na tých cestách vráti 404.
+
+Ľudský workflow: `/zenith-rebuild` → `/zenith-plan` → schválenie → `/zenith-implement`.
+
+## Obrazovka → logika → dáta
+
+`index.html` (`class Component`) → `state` + `localStorage` → `zenith-sketch.js` na Princípoch.
+
+## Konflikty (kód je pravda)
+
+1. `CLAUDE.md` žiada **Fredoka**. `index.html` nastavuje **Nunito** 900. V kóde platí Nunito, kým sa to nezmení.
+2. `package.json` je v koreni kvôli Lucide. Nestavať z toho druhú React/Vite apku.
+
+## Pravidlo
+
+Ďalšia stavba nadväzuje na súbory v **koreni**. Nestavať druhú React apku vedľa. `index.html` sa nemeň bez schváleného zadania.

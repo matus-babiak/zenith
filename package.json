@@ -1,0 +1,8 @@
+{
+  "name": "zenith",
+  "private": true,
+  "description": "Runtime is index.html. The only npm package is Lucide icons.",
+  "dependencies": {
+    "lucide": "^0.544.0"
+  }
+}
