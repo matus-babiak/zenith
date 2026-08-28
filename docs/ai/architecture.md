@@ -33,7 +33,7 @@ Koreň **nemá** `src/`. Vstup je `index.html` (Claude Design). `package.json` m
 
 - Obrazovka je `state.route` napojená na URL. Cesty: `/`, `/vdacnost`, `/uspechy`, `/napady`, `/hnevaju`, `/manifestacia`, `/kotva`, `/principy`.
 - Hranica široká / telefón: `window.innerWidth >= 900`.
-- Dáta: Neon tabuľka `zenith_state` (jeden riadok JSONB) cez `/api/state`, keď sú nastavené env. Inak `localStorage` `zenith.v1`. Routa sa neukladá.
+- Dáta: Neon tabuľka `zenith_state` (jeden riadok JSONB) cez `/api/state`. Prehliadač nič neukladá. Routa sa neukladá.
 - `DATABASE_URL`, `ZENITH_SAVE_KEY` a `SITE_PASSWORD` len v env (Vercel / `.env`). Nie v gite.
 - Na Vercel: bez cookie z hesla middleware presmeruje na `/gate.html`. Lokálny `serve.py` bránu nespúšťa.
 
@@ -55,7 +55,7 @@ Nasadenie: GitHub na Vercel, env `DATABASE_URL`, `ZENITH_SAVE_KEY`, `SITE_PASSWO
 
 ## Obrazovka → logika → dáta
 
-`index.html` → `/api/state` (Neon) a `localStorage` → `zenith-sketch.js` na Princípoch.
+`index.html` → `/api/state` (Neon) → `zenith-sketch.js` na Princípoch.
 
 ## Konflikty (kód je pravda)
 

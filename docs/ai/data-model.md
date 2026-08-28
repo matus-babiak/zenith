@@ -1,6 +1,6 @@
 # Dátový model — Zenith
 
-**Stav:** Persistencia Neon (keď je env) a `localStorage` ako záloha.  
+**Stav:** Persistencia výhradne cez Neon (`/api/state`). Prehliadač nič neukladá.  
 **Posledné overenie:** 28. 8. 2026, `index.html` + `api/state.js`.
 
 ## Aktuálny stav
@@ -8,9 +8,9 @@
 - Tabuľka Neon: `zenith_state` (id=1, `payload` JSONB). Vzniká `CREATE TABLE IF NOT EXISTS`, žiadny DROP.
 - API: `GET`/`PUT` `/api/state`. Telo PUT: `{ "payload": { entries, ideas, manifest, anchor, principles } }`.
 - Env: `DATABASE_URL`, `ZENITH_SAVE_KEY` (hlavička `x-zenith-key`), `SITE_PASSWORD` (cookie brána na Vercel). Hodnoty nie sú v gite.
-- Záloha v prehliadači: `localStorage` kľúč **`zenith.v1`**.
-- Ak API nie je (lokálny `serve.py`, 503, 401), ostane localStorage. Ak kľúč chýba, `Component.seed()` (ukážka).
-- Prázdny Neon sa neseeduje ukážkou. Ak Neon prázdny a v localStorage už sú dáta, raz sa nahrajú.
+- Pri načítaní: prázdny stav v pamäti, potom `GET /api/state`. Ak Neon prázdny, ostane prázdny (`Component.empty()`). Ukážkové dáta sa nenačítavajú.
+- Ak API nie je (lokálny `serve.py`, 503, 401), zápisy sa neukladajú. Na produkcii (Vercel + env) ide všetko do Neon.
+- Starý kľúč `localStorage` `zenith.v1` sa pri štarte vymaže (jednorazový cleanup v prehliadači).
 
 Ukladá sa len: `entries`, `ideas`, `manifest`, `anchor`, `principles`. Routa, drafty a otvorené dialógy sa nepersistujú.
 

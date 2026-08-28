@@ -16,7 +16,7 @@ Zdroj pravdy pre AI development. Nie špekulácia.
 | --- | --- |
 | [product.md](product.md) | Produkt a mantinely |
 | [architecture.md](architecture.md) | Prototyp vs AI vrstva |
-| [data-model.md](data-model.md) | `localStorage` `zenith.v1` |
+| [data-model.md](data-model.md) | Neon `zenith_state`, payload JSON |
 | [business-rules.md](business-rules.md) | Proces + pravidlá apky |
 | [ui-ux.md](ui-ux.md) | Obrazovky, CLAUDE.md, telefón |
 | [brand/icon-vrchol.png](brand/icon-vrchol.png) | Znak vrchol (v apke ako `icon-vrchol.png`, nočné pozadie) |
