@@ -11,6 +11,7 @@
 - Pri načítaní: prázdny stav v pamäti, potom `GET /api/state`. Ak Neon prázdny, ostane prázdny (`Component.empty()`). Ukážkové dáta sa nenačítavajú.
 - Ak API nie je (lokálny `serve.py`, 503, 401), zápisy sa neukladajú. Na produkcii (Vercel + env) ide všetko do Neon.
 - Starý kľúč `localStorage` `zenith.v1` sa pri štarte vymaže (jednorazový cleanup v prehliadači).
+- Jednorazové vyčistenie Neon: `node scripts/clear-neon-state.js --confirm` (s `DATABASE_URL`) alebo `--via-api https://…` (s `ZENITH_SAVE_KEY`).
 
 Ukladá sa len: `entries`, `ideas`, `manifest`, `anchor`, `principles`. Routa, drafty a otvorené dialógy sa nepersistujú.
 

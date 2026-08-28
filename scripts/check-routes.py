@@ -81,6 +81,12 @@ def main():
         return fail("api/state.js missing CREATE TABLE IF NOT EXISTS")
     if "DROP TABLE" in api_txt.upper():
         return fail("api/state.js contains DROP")
+    clear_script = ROOT / "scripts" / "clear-neon-state.js"
+    if not clear_script.is_file():
+        return fail("scripts/clear-neon-state.js missing")
+    clear_txt = clear_script.read_text("utf-8", "replace")
+    if "--confirm" not in clear_txt:
+        return fail("clear-neon-state.js missing --confirm guard")
     cfg = (ROOT / "zenith-config.js").read_text("utf-8", "replace")
     if "postgres://" in cfg:
         return fail("zenith-config.js contains a connection string")
