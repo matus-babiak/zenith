@@ -9,7 +9,8 @@
 - API: `GET`/`PUT` `/api/state`. Telo PUT: `{ "payload": { entries, ideas, manifest, anchor, principles } }`.
 - Env: `DATABASE_URL`, `ZENITH_SAVE_KEY` (hlavička `x-zenith-key`), `SITE_PASSWORD` (cookie brána na Vercel). Hodnoty nie sú v gite.
 - Pri načítaní: prázdny stav v pamäti, potom `GET /api/state`. Ak Neon prázdny alebo starý formát (`schema` ≠ 2), server vráti prázdny stav a prepíše riadok. Ukážkové dáta sa nenačítavajú.
-- Frontend: debounced `PUT` (300 ms), okamžitý `flushPersist` po uložení zápisu a pri `pagehide`. Počas hydrate sa lokálne zmeny neprepíšu serverom (`_dirty`). Indikátor „Offline“ / „Chyba uloženia“ v hlavičke na mobile.
+- Frontend: debounced `PUT` (300 ms), okamžitý `flushPersist` po uložení zápisu a pri `pagehide`. Počas hydrate sa lokálne zmeny neprepíšu serverom (`_dirty`). Indikátor „Offline“ / „Chyba uloženia“ v hlavičke na mobile. `_hydrateGen` musí byť inicializovaný v `componentDidMount` (inak hydratácia nikdy nedokončí).
+- `ZENITH_SAVE_KEY` musí byť dostupný pri Vercel **builde** (`installCommand` → `zenith-config.js`). Sensitive-only runtime env nestačí. Overenie: `node scripts/test-state-persist.js` (behaviorálny harness + voliteľný Neon roundtrip).
 - Ak API nie je (lokálny `serve.py`, 503, 401), zápisy sa neukladajú. Na produkcii (Vercel + env) ide všetko do Neon.
 - Starý kľúč `localStorage` `zenith.v1` sa pri štarte vymaže (jednorazový cleanup v prehliadači).
 - Jednorazové vyčistenie Neon: `node scripts/clear-neon-state.js --confirm` (s `DATABASE_URL`) alebo `--via-api https://…` (s `ZENITH_SAVE_KEY`).

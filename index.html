@@ -812,6 +812,7 @@ class Component extends DCLogic {
     this._wasHydrated = false;
     this._allowRemote = false;
     this._dirty = false;
+    this._hydrateGen = 0;
     this._onResize = () => this.setState({ w: window.innerWidth });
     this._onPop = () => {
       const r = Component.routeFromPath(location.pathname);
@@ -899,7 +900,8 @@ class Component extends DCLogic {
     this._wasHydrated = false;
     this._allowRemote = false;
     this._dirty = false;
-    const gen = ++this._hydrateGen;
+    this._hydrateGen = (this._hydrateGen || 0) + 1;
+    const gen = this._hydrateGen;
     fetch('/api/state', { credentials: 'same-origin', headers: this.authHeaders() }).then((r) => {
       const ct = (r.headers.get('content-type') || '').toLowerCase();
       if (!ct.includes('application/json')) return null;
