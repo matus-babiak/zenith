@@ -172,6 +172,9 @@
         </button>
         <img class="z-logo" src="/icon-vrchol.png" alt="Zenith">
         <span style="font-family: var(--font-heading); font-size: 18px; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ ui.title }}</span>
+        <sc-if value="{{ ui.saveWarn }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size: 11px; color: var(--color-accent-800); white-space: nowrap">{{ ui.saveWarn }}</span>
+        </sc-if>
       </header>
     </sc-if>
 
@@ -805,14 +808,20 @@ class Component extends DCLogic {
 
   componentDidMount() {
     try { localStorage.removeItem('zenith.v1'); } catch (e) { /* ignore */ }
+    this._hydrated = false;
+    this._wasHydrated = false;
+    this._allowRemote = false;
+    this._dirty = false;
     this._onResize = () => this.setState({ w: window.innerWidth });
     this._onPop = () => {
       const r = Component.routeFromPath(location.pathname);
       Component.setDocTitle(r);
       this.setState({ route: r, drawer: false });
     };
+    this._onPageHide = () => { this.flushPersist(); };
     window.addEventListener('resize', this._onResize);
     window.addEventListener('popstate', this._onPop);
+    window.addEventListener('pagehide', this._onPageHide);
     Component.setDocTitle(this.state.route);
     this.paintIcons();
     this.hydrateRemote();
@@ -820,10 +829,17 @@ class Component extends DCLogic {
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('popstate', this._onPop);
+    window.removeEventListener('pagehide', this._onPageHide);
     if (this._timer) clearInterval(this._timer);
     if (this._putTimer) clearTimeout(this._putTimer);
   }
-  componentDidUpdate() { this.persist(); this.paintIcons(); }
+  componentDidUpdate() {
+    if (this._wasHydrated) {
+      this._dirty = true;
+      this.persist();
+    }
+    this.paintIcons();
+  }
 
   paintIcons() {
     const run = () => {
@@ -854,13 +870,37 @@ class Component extends DCLogic {
   }
 
   putRemote(snap) {
-    fetch('/api/state', { method: 'PUT', headers: this.authHeaders(), body: JSON.stringify({ payload: snap }) }).catch(() => {});
+    return fetch('/api/state', {
+      method: 'PUT',
+      credentials: 'same-origin',
+      keepalive: true,
+      headers: this.authHeaders(),
+      body: JSON.stringify({ payload: snap })
+    }).then((r) => {
+      if (!r.ok) throw new Error('save failed');
+      this._saveError = false;
+    }).catch(() => {
+      this._saveError = true;
+      this.forceUpdate();
+    });
+  }
+
+  flushPersist() {
+    if (!this._hydrated || !this._allowRemote) return;
+    if (this._putTimer) {
+      clearTimeout(this._putTimer);
+      this._putTimer = null;
+    }
+    return this.putRemote(this.snapshot());
   }
 
   hydrateRemote() {
     this._hydrated = false;
+    this._wasHydrated = false;
     this._allowRemote = false;
-    fetch('/api/state', { headers: this.authHeaders() }).then((r) => {
+    this._dirty = false;
+    const gen = ++this._hydrateGen;
+    fetch('/api/state', { credentials: 'same-origin', headers: this.authHeaders() }).then((r) => {
       const ct = (r.headers.get('content-type') || '').toLowerCase();
       if (!ct.includes('application/json')) return null;
       if (r.status === 503 || r.status === 401) return null;
@@ -868,7 +908,12 @@ class Component extends DCLogic {
       this._allowRemote = true;
       return r.json();
     }).then((data) => {
+      if (gen !== this._hydrateGen) return;
       if (!data) return;
+      if (this._dirty) {
+        this.flushPersist();
+        return;
+      }
       if (data.payload && data.payload.entries) {
         this.applyPayload(data.payload);
         return;
@@ -877,16 +922,16 @@ class Component extends DCLogic {
     }).catch(() => {
       this._allowRemote = false;
     }).finally(() => {
+      if (gen !== this._hydrateGen) return;
       this._hydrated = true;
-      this.persist();
+      this._wasHydrated = true;
     });
   }
 
   persist() {
     if (!this._hydrated || !this._allowRemote) return;
-    const snap = this.snapshot();
     if (this._putTimer) clearTimeout(this._putTimer);
-    this._putTimer = setTimeout(() => this.putRemote(snap), 500);
+    this._putTimer = setTimeout(() => this.flushPersist(), 300);
   }
 
   today() { return new Date().toISOString().slice(0, 10); }
@@ -919,6 +964,7 @@ class Component extends DCLogic {
     const k = this.journalKey(); if (!k) return;
     const text = this.state.draftText.trim(); if (!text) return;
     const cfg = Component.J[k];
+    this._dirty = true;
     this.setState(s => {
       const list = s.entries[k].slice();
       if (s.editId) {
@@ -932,7 +978,7 @@ class Component extends DCLogic {
         list.unshift({ id: 'e' + Date.now(), text, area: s.draftArea, date: this.today() });
       }
       return { entries: Object.assign({}, s.entries, { [k]: list }), draftText: '', editId: null };
-    });
+    }, () => this.flushPersist());
   }
 
   startChallenge(id) {
@@ -1227,6 +1273,7 @@ class Component extends DCLogic {
         navToggleLabel: s.navExpanded ? 'Zbaliť menu' : 'Rozbaliť menu',
         navToggleMark: s.navExpanded ? '‹' : '›',
         title: (Component.NAV.find(n => n.r === s.route) || {}).n,
+        saveWarn: !this._wasHydrated ? '' : (!this._allowRemote ? 'Offline' : (this._saveError ? 'Chyba uloženia' : '')),
         openDrawer: () => this.setState({ drawer: true }),
         closeDrawer: () => this.setState({ drawer: false }),
         toggleNav: () => this.setState(x => ({ navExpanded: !x.navExpanded }))
