@@ -1,3 +1,3 @@
 # Implementačné zadanie — Zenith
 
-Žiadne schválené zadanie. Najprv `/zenith-plan`, potom schválenie, potom `/zenith-implement`.
+Žiadne schválené zadanie. Posledná úloha dokončená. Ďalšia práca: `/zenith-plan`.
